@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 
 @NgModule({
@@ -12,8 +13,10 @@ import { HomePageRoutingModule } from './home-routing.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+    ModalModule.forRoot()
   ],
+  exports: [ModalModule],
   declarations: [HomePage]
 })
 export class HomePageModule {}
