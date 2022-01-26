@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
@@ -15,10 +16,18 @@ export class HomePage {
   public provider: string
   public date: string
 
-  constructor(private modalService: BsModalService) {}
+  constructor(private modalService: BsModalService, public router: Router) {}
 
-  openModal(template) {
-    this.modalRef = this.modalService.show(template)
+  openModal(template: TemplateRef<any>) {
+    this.modalRef = this.modalService.show(template, 
+      { 
+        class: 'modal-dialogue-centered modal-xl',
+        backdrop: 'static',
+      })
+  }
+
+  navigate(route:string) {
+    this.router.navigateByUrl(`/${route}`)
   }
 
   consulta() {

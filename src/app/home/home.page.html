@@ -1,15 +1,15 @@
 
 <ion-content [fullscreen]="true">
   <div class="h-100 row mx-1">
-    <div class="col-3 text-center" style="border: 1px solid red;">
+    <div class="col-3 text-center">
       <div>
-        <button class="btn btn-primary btn-lg m-2 w-100" (click)="openModal(entrada)">Nova entrada</button>
+        <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('entrada')">Nova entrada</button>
       </div>
       <div>
-        <button class="btn btn-primary btn-lg m-2 w-100" (click)="openModal(saida)">Nova saída</button>
+        <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('saida')">Nova saída</button>
       </div>
     </div>
-    <div class="col-9" style="border: 1px solid blue;">
+    <div class="col-9">
       <fieldset class="border-fieldset mt-3 p-3">
         <legend class="legend-fieldset"><span>Registros</span></legend>
 
@@ -37,17 +37,53 @@
             </div>
           </div>
         </form>
-        <ion-button id="trigger-button">Click to open modal</ion-button>
-        <ion-modal trigger="trigger-button">
-          <ng-template>
-            <ion-content>
-              Modal Content
-              <ion-button (click)="dismiss()">Fechar</ion-button>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
       </fieldset>
     </div>
   </div>
+
+  <ng-template #entrada>
+    <div class="modal-header bg-primary">
+      <h4 class="modal-title text-white">Incluir Nota Fiscal</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <form class="mt-2">
+          <div class="row">
+            <div class="col-3">
+              <p>N° da nota: </p><input class="form-control" type="number" [(ngModel)]="noteNumber" name="note">
+            </div>
+            <div class="col-4">
+              <p>Fornecedor: </p><input class="form-control" type="text" [(ngModel)]="provider" name="provider">
+            </div>
+            <div class="col-5">
+              <p>Data: </p><input class="form-control" type="date" name="date" [(ngModel)]="date" placeholder="Nome do paciente">
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-6">
+              <p>Paciente: </p><input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+            </div>
+            <div class="col-6">
+              <p>Médico: </p><input class="form-control" type="text" name="doctor" [(ngModel)]="doctor" placeholder="Nome do médico">
+            </div>
+          </div>
+          <p class="my-3">Itens:</p>
+          <div class="row itens">
+            <div class="col-8">
+              <input class="form-control" type="text" placeholder="Item">
+            </div>
+            <div class="col-4">
+              <input class="form-control" type="number" placeholder="Quantidade">
+            </div>
+          </div>
+          <div class="my-3 text-end">
+            <button class="btn btn-primary me-2">Confirmar</button>
+            <button class="btn btn-danger">Cancelar</button>
+          </div>
+        </form>
+    </div>
+  </ng-template>
 
 </ion-content>
