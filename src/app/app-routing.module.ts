@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { EntradaComponent } from './components/entrada/entrada.component';
-import { SaidaComponent } from './components/saida/saida.component';
 
 const routes: Routes = [
   {
@@ -15,12 +13,9 @@ const routes: Routes = [
   },
   {
     path: 'entrada',
-    component: EntradaComponent
-  },
-  {
-    path: 'saida',
-    component: SaidaComponent
+    loadChildren: () => import('./entrada/entrada.module').then( m => m.EntradaPageModule)
   }
+
 ];
 
 @NgModule({

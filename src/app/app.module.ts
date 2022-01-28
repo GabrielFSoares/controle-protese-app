@@ -17,7 +17,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     IonicModule.forRoot(), 
     AppRoutingModule, 
     HomePageModule, 
-    AngularFireModule.initializeApp(environment.firebaseConfig),
     ModalModule.forRoot()
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],

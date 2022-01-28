@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { app } from '../firebaseConfig';
+import { getFirestore, collection, addDoc } from "firebase/firestore"
+
+const db = getFirestore(app)
 
 interface NotaFiscal {
   numNota: number
-  lote: string
+  serie: string
   fornecedor: string
   medico: string
   paciente: string
@@ -13,14 +17,13 @@ interface NotaFiscal {
 
 @Component({
   selector: 'app-entrada',
-  templateUrl: './entrada.component.html',
-  styleUrls: ['./entrada.component.scss'],
+  templateUrl: './entrada.page.html',
+  styleUrls: ['./entrada.page.scss'],
 })
-
-export class EntradaComponent implements OnInit {
+export class EntradaPage implements OnInit {
 
   public noteNumber: number
-  public lot: string
+  public serie: string
   public provider: string
   public doctor: string
   public patient: string
@@ -35,21 +38,31 @@ export class EntradaComponent implements OnInit {
   }
 
   noteEntry() {
+
+    let date = new Date()
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
+
+    this.entryDate = day + '/' + month + '/' + year
+
+
+    console.log(this.entryDate)
+
     this.notaFiscal = {
       numNota: this.noteNumber,
-      lote: this.lot,
+      serie: this.serie,
       fornecedor: this.provider,
       medico: this.doctor,
       paciente: this.patient,
       dataEmissao: this.issueDate,
       dataEntrada: this.entryDate
     }
-    console.log(this.notaFiscal)
-    console.log(this.noteNumber)
+
+    const docRef = addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
   }
 
   cancel() {
     this.router.navigateByUrl('/home')
   }
-
 }
