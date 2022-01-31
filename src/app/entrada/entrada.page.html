@@ -26,21 +26,23 @@
       </div>
       <p>Itens:</p>
       <div id="itens">
-        <select class="form-select">
-          <option selected>{{product}}</option>
-        </select>
-        <div class="row my-2">
-          <div class="col-4">
-            <input class="form-control" type="number" [(ngModel)]="serie" placeholder="Número de série">
-          </div>
-          <div class="col-3">
-            <input class="form-control" type="number" [(ngModel)]="volume" placeholder="Volume">
-          </div>
-          <div class="col-3">
-            <input class="form-control" type="number" [(ngModel)]="quantitie" placeholder="Quantidade">
-          </div>
-          <div id="icon" class="col-2 text-end">
-            <ion-icon id="add" name="add-circle" size="large" (click)="addItem()"></ion-icon>
+        <div id="1">
+          <select id="product" class="form-select">
+            <option selected>{{product}}</option>
+          </select>
+          <div class="row my-2">
+            <div class="col-4">
+              <input id="serie1" class="form-control" type="number" placeholder="Número de série">
+            </div>
+            <div class="col-3">
+              <input id="volume1" class="form-control" type="number" placeholder="Volume">
+            </div>
+            <div class="col-3">
+              <input id="quantitie1" class="form-control" type="number" placeholder="Quantidade">
+            </div>
+            <div id="icon" class="col-2 text-end">
+              <ion-icon id="add" name="add-circle" size="large" (click)="addItem()"></ion-icon>
+            </div>
           </div>
         </div>
       </div>

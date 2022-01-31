@@ -33,6 +33,7 @@ export class EntradaPage implements OnInit {
   public issueDate: any
   public entryDate: any
   public notaFiscal: NotaFiscal
+  public itens = {}
 
   constructor(public router: Router) { }
 
@@ -47,6 +48,27 @@ export class EntradaPage implements OnInit {
     let month = date.getMonth() + 1
     let year = date.getFullYear()
 
+    let storage = parseInt(localStorage.getItem('item'))
+
+    for(let j=0, i=1; i<=storage; i++, j++) {
+      let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
+      let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+      let quantitie = (<HTMLSelectElement>document.getElementById('quantitie'+i.toString())).value
+
+      if(j == null || j == undefined) {
+        j = 0
+      }
+
+      this.itens[j] = {
+        'descricao': this.product,
+        'serie': serie,
+        'volume': volume,
+        'quantidade': quantitie
+      }
+    }
+
+    console.log(this.itens)
+
     this.entryDate = day + '-' + month + '-' + year
 
     this.notaFiscal = {
@@ -56,53 +78,91 @@ export class EntradaPage implements OnInit {
       paciente: this.patient,
       dataEmissao: this.issueDate,
       dataEntrada: this.entryDate,
-      item: [{
-        serie: this.serie,
-        volume: this.volume,
-        quantidade: this.quantitie,
-        descricao: this.product
-      }]
+      item: this.itens
     }
 
     const docRef = addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
   }
 
   addItem() {
-    /*if(localStorage.getItem('item') == '1') {
-      localStorage.setItem('item', '2')
-    } else {
-      let itens = parseInt(localStorage.getItem('item'))
-      localStorage.setItem('item', (itens+1).toString())
-    }*/
-    
     let id = parseInt(localStorage.getItem('item')) + 1
-    let divItem = document.getElementById('itens')
-    let innerDiv = '<div id="'+id+'"><select class="form-select"><option selected>'+this.product+'</option></select><div class="row my-2"><div class="col-4"><input class="form-control" type="number" [(ngModel)]="serie" placeholder="Número de série"></div><div class="col-3"><input class="form-control" type="number" [(ngModel)]="volume" placeholder="Volume"></div><div class="col-3"><input class="form-control" type="number" [(ngModel)]="quantitie" placeholder="Quantidade"></div><div class="col-2 text-end"><ion-icon class="text-danger" name="trash" id="remove" size="large"></ion-icon></div></div></div>'
-
-    divItem.innerHTML += innerDiv
-
     localStorage.setItem('item', id.toString())
 
-    document.getElementById('add').addEventListener("click", () => {
-      this.addItem()
+    let divMom = document.getElementById('itens')
+
+    let div = document.createElement('div')
+    div.id = id.toString()
+
+    divMom.appendChild(div)
+
+    let select = document.createElement('select')
+    select.className = 'form-select'
+
+    let option = document.createElement('option')
+    option.innerHTML = this.product
+    option.selected
+
+    div.appendChild(select)
+    select.appendChild(option)
+
+    let divRow = document.createElement('div')
+    divRow.className = "row my-2"
+
+    div.appendChild(divRow)
+
+    let divCol1 = document.createElement('div')
+    divCol1.className = 'col-4'
+
+    let inputCol1 = document.createElement('input')
+    inputCol1.className = 'form-control'
+    inputCol1.placeholder = 'Número de série'
+    inputCol1.type = 'number'
+    inputCol1.id = 'serie'+id.toString()
+
+    divRow.appendChild(divCol1)
+    divCol1.appendChild(inputCol1)
+
+    let divCol2 = document.createElement('div')
+    divCol2.className = 'col-3'
+
+    let inputCol2 = document.createElement('input')
+    inputCol2.className = 'form-control'
+    inputCol2.placeholder = 'Volume'
+    inputCol2.type = 'number'
+    inputCol2.id = 'volume'+id.toString()
+
+    divRow.appendChild(divCol2)
+    divCol2.appendChild(inputCol2)
+
+    let divCol3 = document.createElement('div')
+    divCol3.className = 'col-3'
+
+    let inputCol3 = document.createElement('input')
+    inputCol3.className = 'form-control'
+    inputCol3.placeholder = 'Quantidade'
+    inputCol3.type = 'number'
+    inputCol3.id = 'quantitie'+id.toString()
+
+    divRow.appendChild(divCol3)
+    divCol3.appendChild(inputCol3)
+
+    let divCol4 = document.createElement('div')
+    divCol4.className = 'col-2 text-end'
+    divCol4.id = 'icon' + id.toString()
+
+    let icon = document.createElement('ion-icon')
+    icon.id = 'remove' + id.toString()
+    icon.className = "text-danger"
+    icon.name = "trash"
+    icon.size = "large"
+    icon.addEventListener("click", () => {
+      document.getElementById(id.toString()).remove()
+      let storage = parseInt(localStorage.getItem('item'))
+      localStorage.setItem('item', (storage-1).toString())
     })
 
-    document.getElementById('remove').addEventListener("click", () => {
-      this.removeItem(id)
-    })
-  }
-
-  removeItem(id) {
-    document.getElementById(id).remove()
-    localStorage.setItem('item', (id-1).toString())
-
-    document.getElementById('add').addEventListener("click", () => {
-      this.addItem()
-    })
-
-    document.getElementById('remove').addEventListener("click", () => {
-      this.removeItem(id)
-    })
+    divRow.appendChild(divCol4)
+    divCol4.appendChild(icon)
   }
 
   cancel() {
