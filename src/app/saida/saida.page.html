@@ -1,0 +1,45 @@
+<ion-header class="bg-primary text-center text-white py-3 position-fixed">
+    <ion-title>Nova Saída</ion-title>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <br>
+  <div class="container mt-5">
+    <form>      
+      <p>Itens:</p>
+      <div id="itens">
+        <div id="1">
+          <select id="product" class="form-select">
+            <option selected>{{product}}</option>
+          </select>
+          <div class="row my-2">
+            <div class="col-4">
+              <input id="serie1" (keyup)="loadInfo()" class="form-control" type="number" placeholder="Número de série">
+            </div>
+            <div class="col-3">
+              <input id="volume1" class="form-control" type="number" placeholder="Volume">
+            </div>
+            <div class="col-3">
+              <input id="quantitie1" class="form-control" type="number" placeholder="Quantidade">
+            </div>
+            <div id="icon" class="col-2 text-end">
+              <ion-icon id="add" name="add-circle" size="large" (click)="addItem()"></ion-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row my-2">
+        <div class="col-6">
+          <p>Paciente: </p><input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+        </div>
+        <div class="col-6">
+          <p>Médico: </p><input class="form-control" type="text" name="doctor" [(ngModel)]="doctor" placeholder="Nome do médico">
+        </div>
+      </div>
+      <div class="my-3 text-end">
+        <button type="button" class="btn btn-primary me-2" (click)="noteOutput()">Confirmar</button>
+        <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</ion-content>

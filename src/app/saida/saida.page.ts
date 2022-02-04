@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
-import { getFirestore, collection, addDoc } from "firebase/firestore"
+import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore"
+import { Observable, Subject, of } from 'rxjs';
 
 const db = getFirestore(app)
 
@@ -11,82 +12,50 @@ interface NotaFiscal {
   medico: string
   paciente: string
   dataEmissao: any 
-  dataEntrada: any
+  dataSaida: any
   item: any
   movimentacao: string
 }
 
 @Component({
-  selector: 'app-entrada',
-  templateUrl: './entrada.page.html',
-  styleUrls: ['./entrada.page.scss'],
+  selector: 'app-saida',
+  templateUrl: './saida.page.html',
+  styleUrls: ['./saida.page.scss'],
 })
-export class EntradaPage implements OnInit {
+export class SaidaPage implements OnInit {
 
-  public noteNumber: number
-  public serie: number
-  public volume: number
   public product: string
-  public quantitie: number
-  public provider: string
-  public doctor: string
-  public patient: string
-  public issueDate: any
-  public entryDate: any
-  public notaFiscal: NotaFiscal
-  public itens = {}
-  public movement: string
+  private allInfo: Observable<any>;
 
   constructor(public router: Router) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
-    localStorage.setItem('item', '1')
+    localStorage.setItem('itemSaida', '1')
   }
 
-  noteEntry() {
-    let date = new Date()
-    let day = date.getDate()
-    let month = date.getMonth() + 1
-    let year = date.getFullYear()
+  async noteOutput() {
+    const q = query(collection(db, "Estoque"))
+    const querySnapshot = await getDocs(q)
+    let itens = []
+    let i = 0
 
-    let storage = parseInt(localStorage.getItem('item'))
+    let fs = querySnapshot.docChanges()
 
-    for(let j=0, i=1; i<=storage; i++, j++) {
-      let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
-      let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
-      let quantitie = (<HTMLSelectElement>document.getElementById('quantitie'+i.toString())).value
+    //querySnapshot.forEach((doc) => {
+    //console.log(doc.id, " => ", doc.data())
+    //itens[i] = doc.data().item[0].serie
+    //i++
 
-      this.itens[j] = {
-        'descricao': this.product,
-        'serie': serie,
-        'volume': volume,
-        'quantidade': quantitie
-      }
-    }
+    //console.log(doc)
+    //})
 
-    this.movement = "Entrada"
-
-    this.entryDate = year + '-' + month + '-' + day 
-
-    this.notaFiscal = {
-      numNota: this.noteNumber,
-      fornecedor: this.provider,
-      medico: this.doctor,
-      paciente: this.patient,
-      dataEmissao: this.issueDate,
-      dataEntrada: this.entryDate,
-      item: this.itens,
-      movimentacao: this.movement
-    }
-
-    let docRef = addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
-    docRef = addDoc(collection(db, "Estoque"), this.notaFiscal)
+    console.log(fs)
   }
 
   addItem() {
-    let id = parseInt(localStorage.getItem('item')) + 1
-    localStorage.setItem('item', id.toString())
+    let id = parseInt(localStorage.getItem('itemSaida')) + 1
+    localStorage.setItem('itemSaida', id.toString())
 
     let divMom = document.getElementById('itens')
 
@@ -165,7 +134,12 @@ export class EntradaPage implements OnInit {
     divCol4.appendChild(icon)
   }
 
+  loadInfo() {
+    console.log('TEste')
+  }
+
   cancel() {
     this.router.navigateByUrl('/home')
   }
+
 }
