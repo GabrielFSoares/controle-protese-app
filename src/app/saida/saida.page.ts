@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
-import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore"
+import { getFirestore, collection, addDoc, query, where, getDocs, getDoc, doc } from "firebase/firestore"
 import { Observable, Subject, of } from 'rxjs';
 
 const db = getFirestore(app)
@@ -36,28 +36,40 @@ export class SaidaPage implements OnInit {
 
   async noteOutput() {
     const q = query(collection(db, "Estoque"))
-    const querySnapshot = await getDocs(q)
-    let itens = []
-    let i = 0
+    //const querySnapshot = await getDocs(q)
+    
+    const ref = collection(db, "Estoque");
+    const q2 = query(collection(db, "Estoque"), where("item.0.serie", "==", "18100856"));
 
-    let fs = querySnapshot.docChanges()
+    const querySnapshot = await getDocs(q2)    
+    
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data())
 
-    //querySnapshot.forEach((doc) => {
-    //console.log(doc.id, " => ", doc.data())
+      let data = doc.data()
+
+      for(let i in doc.data()) {
+        console.log(doc.data()[i])
+      }
+
+      //doc.data().item
+      //console.log(doc.size)
+
+    /*console.log(doc.id, " => ", doc.data().item[0].serie)
+    console.log(doc.id, " => ", doc.data().item[1].serie)
+    console.log(doc.data())*/
     //itens[i] = doc.data().item[0].serie
     //i++
+    })
 
-    //console.log(doc)
-    //})
-
-    console.log(fs)
+    //console.log(querySnapshot.data())
   }
 
   addItem() {
     let id = parseInt(localStorage.getItem('itemSaida')) + 1
     localStorage.setItem('itemSaida', id.toString())
 
-    let divMom = document.getElementById('itens')
+    let divMom = document.getElementById('itensOut')
 
     let div = document.createElement('div')
     div.id = id.toString()
@@ -126,8 +138,8 @@ export class SaidaPage implements OnInit {
     icon.size = "large"
     icon.addEventListener("click", () => {
       document.getElementById(id.toString()).remove()
-      let storage = parseInt(localStorage.getItem('item'))
-      localStorage.setItem('item', (storage-1).toString())
+      let storage = parseInt(localStorage.getItem('itemSaida'))
+      localStorage.setItem('itemSaida', (storage-1).toString())
     })
 
     divRow.appendChild(divCol4)
@@ -135,7 +147,7 @@ export class SaidaPage implements OnInit {
   }
 
   loadInfo() {
-    console.log('TEste')
+    console.log('Teste')
   }
 
   cancel() {

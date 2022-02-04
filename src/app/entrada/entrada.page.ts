@@ -44,7 +44,7 @@ export class EntradaPage implements OnInit {
     localStorage.setItem('item', '1')
   }
 
-  noteEntry() {
+  async noteEntry() {
     let date = new Date()
     let day = date.getDate()
     let month = date.getMonth() + 1
@@ -80,8 +80,19 @@ export class EntradaPage implements OnInit {
       movimentacao: this.movement
     }
 
-    let docRef = addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
-    docRef = addDoc(collection(db, "Estoque"), this.notaFiscal)
+    const docRef = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
+
+    let docRefId = docRef.id
+
+    for(let i=0; i<storage; i++) {
+      this.itens[i].idNota = docRefId
+    }
+
+    let idNota = {
+      item: this.itens
+    }
+
+    const docRef2 = addDoc(collection(db, "Estoque"), idNota)
   }
 
   addItem() {
