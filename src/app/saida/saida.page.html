@@ -14,15 +14,12 @@
           </select>
           <div class="row my-2">
             <div class="col-4">
-              <input id="serie1" (keyup)="loadInfo()" class="form-control" type="number" placeholder="Número de série">
+              <input id="serie1" (keyup)="loadInfo()" class="form-control" name="serie" [(ngModel)]="serie" type="number" placeholder="Número de série">
             </div>
-            <div class="col-3">
-              <input id="volume1" class="form-control" type="number" placeholder="Volume">
+            <div class="col-4">
+              <input id="volume1" class="form-control" type="number" name="volume" [(ngModel)]="volume" placeholder="Volume">
             </div>
-            <div class="col-3">
-              <input id="quantitie1" class="form-control" type="number" placeholder="Quantidade">
-            </div>
-            <div id="icon" class="col-2 text-end">
+            <div id="icon" class="col-4 text-end">
               <ion-icon id="add" name="add-circle" size="large" (click)="addItem()"></ion-icon>
             </div>
           </div>
@@ -30,10 +27,10 @@
       </div>
       <div class="row my-2">
         <div class="col-6">
-          <p>Paciente: </p><input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+          <p>Paciente: </p><input class="form-control" id="patient" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
         </div>
         <div class="col-6">
-          <p>Médico: </p><input class="form-control" type="text" name="doctor" [(ngModel)]="doctor" placeholder="Nome do médico">
+          <p>Médico: </p><input class="form-control" id="doctor" type="text" name="doctor" [(ngModel)]="doctor" placeholder="Nome do médico">
         </div>
       </div>
       <div class="my-3 text-end">

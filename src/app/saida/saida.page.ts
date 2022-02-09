@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
-import { getFirestore, collection, addDoc, query, where, getDocs, getDoc, doc } from "firebase/firestore"
-import { Observable, Subject, of } from 'rxjs';
+import { getFirestore, collection, addDoc, query, where, getDocs, getDoc, doc, deleteDoc } from "firebase/firestore"
 
 const db = getFirestore(app)
 
@@ -25,7 +24,17 @@ interface NotaFiscal {
 export class SaidaPage implements OnInit {
 
   public product: string
-  private allInfo: Observable<any>;
+  public serie: number
+  public volume: number
+  public patient: string
+  public doctor: string
+  public idNota: string
+  public conf: boolean
+  public itens = {}
+  public movement: string
+  public outputDate: any
+  public docId: string
+  public notaFiscal: NotaFiscal
 
   constructor(public router: Router) { }
 
@@ -35,34 +44,49 @@ export class SaidaPage implements OnInit {
   }
 
   async noteOutput() {
-    const q = query(collection(db, "Estoque"))
-    //const querySnapshot = await getDocs(q)
-    
-    const ref = collection(db, "Estoque");
-    const q2 = query(collection(db, "Estoque"), where("item.0.serie", "==", "18100856"));
+    let date = new Date()
+    let day = date.getDate()
+    let month = date.getMonth() + 1
+    let year = date.getFullYear()
 
-    const querySnapshot = await getDocs(q2)    
-    
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data())
+    this.outputDate = year + '-' + month + '-' + day
+    this.movement = "Saída"
 
-      let data = doc.data()
+    let storage = parseInt(localStorage.getItem('itemSaida')) 
 
-      for(let i in doc.data()) {
-        console.log(doc.data()[i])
+    for(let j=0, i=1; i<=storage; i++, j++) {
+      let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
+      let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+
+      this.itens[j] = {
+        'descricao': this.product,
+        'serie': serie,
+        'volume': volume,
       }
 
-      //doc.data().item
-      //console.log(doc.size)
+      let q = query(collection(db, "Estoque"), where("serie", "==", this.itens[j].serie.toString()))
+      const querySnapshot = await getDocs(q)  
 
-    /*console.log(doc.id, " => ", doc.data().item[0].serie)
-    console.log(doc.id, " => ", doc.data().item[1].serie)
-    console.log(doc.data())*/
-    //itens[i] = doc.data().item[0].serie
-    //i++
-    })
+      querySnapshot.forEach((docc) => {
+        deleteDoc(doc(db, "Estoque", docc.id))
+      })
+    }
 
-    //console.log(querySnapshot.data())
+    const docRef= doc(db, "NotaFiscal", this.idNota)
+    const docSnap = await getDoc(docRef)
+
+    this.notaFiscal = {
+      numNota: docSnap.data().numNota,
+      fornecedor: docSnap.data().fornecedor,
+      medico: docSnap.data().medico,
+      paciente: docSnap.data().paciente,
+      dataEmissao: docSnap.data().dataEmissao,
+      dataSaida: this.outputDate,
+      item: this.itens,
+      movimentacao: this.movement
+    }
+
+    const docRef2 = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
   }
 
   addItem() {
@@ -104,7 +128,7 @@ export class SaidaPage implements OnInit {
     divCol1.appendChild(inputCol1)
 
     let divCol2 = document.createElement('div')
-    divCol2.className = 'col-3'
+    divCol2.className = 'col-4'
 
     let inputCol2 = document.createElement('input')
     inputCol2.className = 'form-control'
@@ -116,20 +140,8 @@ export class SaidaPage implements OnInit {
     divCol2.appendChild(inputCol2)
 
     let divCol3 = document.createElement('div')
-    divCol3.className = 'col-3'
-
-    let inputCol3 = document.createElement('input')
-    inputCol3.className = 'form-control'
-    inputCol3.placeholder = 'Quantidade'
-    inputCol3.type = 'number'
-    inputCol3.id = 'quantitie'+id.toString()
-
-    divRow.appendChild(divCol3)
-    divCol3.appendChild(inputCol3)
-
-    let divCol4 = document.createElement('div')
-    divCol4.className = 'col-2 text-end'
-    divCol4.id = 'icon' + id.toString()
+    divCol3.className = 'col-4 text-end'
+    divCol3.id = 'icon' + id.toString()
 
     let icon = document.createElement('ion-icon')
     icon.id = 'remove' + id.toString()
@@ -142,16 +154,32 @@ export class SaidaPage implements OnInit {
       localStorage.setItem('itemSaida', (storage-1).toString())
     })
 
-    divRow.appendChild(divCol4)
-    divCol4.appendChild(icon)
+    divRow.appendChild(divCol3)
+    divCol3.appendChild(icon)
   }
 
-  loadInfo() {
-    console.log('Teste')
+  async loadInfo() {
+    const q = query(collection(db, "Estoque"), where("serie", "==", this.serie.toString()))
+    const querySnapshot = await getDocs(q)  
+
+    querySnapshot.forEach((doc) => {
+      this.idNota = doc.data().idNota
+      this.volume = doc.data().volume
+      this.conf = true
+    })
+
+    if(this.conf) {
+      const docRef= doc(db, "NotaFiscal", this.idNota)
+      const docSnap = await getDoc(docRef)
+
+      this.patient = docSnap.data().paciente
+      this.doctor = docSnap.data().medico
+      
+      this.conf = false
+    }
   }
 
   cancel() {
     this.router.navigateByUrl('/home')
   }
-
 }

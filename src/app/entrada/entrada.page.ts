@@ -55,13 +55,11 @@ export class EntradaPage implements OnInit {
     for(let j=0, i=1; i<=storage; i++, j++) {
       let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
       let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
-      let quantitie = (<HTMLSelectElement>document.getElementById('quantitie'+i.toString())).value
 
       this.itens[j] = {
         'descricao': this.product,
         'serie': serie,
         'volume': volume,
-        'quantidade': quantitie
       }
     }
 
@@ -86,13 +84,13 @@ export class EntradaPage implements OnInit {
 
     for(let i=0; i<storage; i++) {
       this.itens[i].idNota = docRefId
+
+      let docRef2 = addDoc(collection(db, "Estoque"), this.itens[i])
     }
 
-    let idNota = {
+    /*let idNota = {
       item: this.itens
-    }
-
-    const docRef2 = addDoc(collection(db, "Estoque"), idNota)
+    }*/
   }
 
   addItem() {
@@ -134,7 +132,7 @@ export class EntradaPage implements OnInit {
     divCol1.appendChild(inputCol1)
 
     let divCol2 = document.createElement('div')
-    divCol2.className = 'col-3'
+    divCol2.className = 'col-4'
 
     let inputCol2 = document.createElement('input')
     inputCol2.className = 'form-control'
@@ -146,20 +144,8 @@ export class EntradaPage implements OnInit {
     divCol2.appendChild(inputCol2)
 
     let divCol3 = document.createElement('div')
-    divCol3.className = 'col-3'
-
-    let inputCol3 = document.createElement('input')
-    inputCol3.className = 'form-control'
-    inputCol3.placeholder = 'Quantidade'
-    inputCol3.type = 'number'
-    inputCol3.id = 'quantitie'+id.toString()
-
-    divRow.appendChild(divCol3)
-    divCol3.appendChild(inputCol3)
-
-    let divCol4 = document.createElement('div')
-    divCol4.className = 'col-2 text-end'
-    divCol4.id = 'icon' + id.toString()
+    divCol3.className = 'col-4 text-end'
+    divCol3.id = 'icon' + id.toString()
 
     let icon = document.createElement('ion-icon')
     icon.id = 'remove' + id.toString()
@@ -172,8 +158,8 @@ export class EntradaPage implements OnInit {
       localStorage.setItem('item', (storage-1).toString())
     })
 
-    divRow.appendChild(divCol4)
-    divCol4.appendChild(icon)
+    divRow.appendChild(divCol3)
+    divCol3.appendChild(icon)
   }
 
   cancel() {
