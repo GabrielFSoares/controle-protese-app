@@ -11,7 +11,7 @@ interface NotaFiscal {
   medico: string
   paciente: string
   dataEmissao: any 
-  dataSaida: any
+  dataMovimento: any
   item: any
   movimentacao: string
 }
@@ -81,7 +81,7 @@ export class SaidaPage implements OnInit {
       medico: docSnap.data().medico,
       paciente: docSnap.data().paciente,
       dataEmissao: docSnap.data().dataEmissao,
-      dataSaida: this.outputDate,
+      dataMovimento: this.outputDate,
       item: this.itens,
       movimentacao: this.movement
     }

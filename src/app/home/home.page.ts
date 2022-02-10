@@ -1,6 +1,10 @@
 import { Component, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { app } from '../firebaseConfig';
+import { getFirestore, collection, query, getDocs } from "firebase/firestore";
+
+const db = getFirestore(app)
 
 @Component({
   selector: 'app-home',
@@ -15,8 +19,14 @@ export class HomePage {
   public doctor: string
   public provider: string
   public date: string
+  public movements: any
+  public docId: any
 
-  constructor(private modalService: BsModalService, public router: Router) {}
+  constructor(private modalService: BsModalService, public router: Router) { }
+
+  ngOnInit() {
+    this.movementsLoad()
+  }
 
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template, 
@@ -36,5 +46,25 @@ export class HomePage {
     console.log(this.doctor)
     console.log(this.provider)
     console.log(this.date)
+  }
+
+  async movementsLoad() {
+    const q = query(collection(db, "NotaFiscal"))
+    const querySnapshot = await getDocs(q)
+    let index = 0
+    this.movements = []
+    this.docId = [{}]
+
+    querySnapshot.forEach((doc) => {
+      this.movements.push(doc.data()) 
+      this.docId.push(doc.id)
+    })
+
+    console.log(this.movements)
+    console.log(this.docId[0])
+  }
+
+  openNote(id) {
+    console.log(id)
   }
 }

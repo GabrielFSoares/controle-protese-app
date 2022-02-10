@@ -5,24 +5,29 @@
 <ion-content [fullscreen]="true">
   <br>
   <div class="container mt-5">
-    <form>
+    <form [formGroup]="formNote">
       <div class="row">
         <div class="col-3">
-          <p>N° da nota: </p><input class="form-control" type="number" [(ngModel)]="noteNumber" name="note">
+          <p>N° da nota: </p>
+          <input class="form-control" formControlName="noteNumber" type="number"  name="note"/>
         </div>
         <div class="col-4">
-          <p>Fornecedor: </p><input class="form-control" type="text" [(ngModel)]="provider" name="provider">
+          <p>Fornecedor: </p>
+          <input class="form-control" formControlName="provider" type="text" name="provider"/>
         </div>
         <div class="col-5">
-          <p>Data de emissão: </p><input class="form-control" type="date" name="date" [(ngModel)]="issueDate">
+          <p>Data de emissão: </p>
+          <input class="form-control" formControlName="issueDate" type="date" name="date"/>
         </div>
       </div>
       <div class="row my-2">
         <div class="col-6">
-          <p>Paciente: </p><input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+          <p>Paciente: </p>
+          <input class="form-control" formControlName="patient" type="text" name="patient" placeholder="Nome do paciente"/>
         </div>
         <div class="col-6">
-          <p>Médico: </p><input class="form-control" type="text" name="doctor" [(ngModel)]="doctor" placeholder="Nome do médico">
+          <p>Médico: </p>
+          <input class="form-control" formControlName="doctor" type="text" name="doctor" placeholder="Nome do médico"/>
         </div>
       </div>
       <p>Itens:</p>
@@ -33,10 +38,10 @@
           </select>
           <div class="row my-2">
             <div class="col-4">
-              <input id="serie1" class="form-control" type="number" placeholder="Número de série">
+              <input id="serie1" class="form-control" type="number" placeholder="Número de série"/>
             </div>
             <div class="col-4">
-              <input id="volume1" class="form-control" type="number" placeholder="Volume">
+              <input id="volume1" class="form-control" type="number" placeholder="Volume"/>
             </div>
             <div id="icon" class="col-4 text-end">
               <ion-icon id="add" name="add-circle" size="large" (click)="addItem()"></ion-icon>
@@ -45,7 +50,7 @@
         </div>
       </div>
       <div class="my-3 text-end">
-        <button type="button" class="btn btn-primary me-2" (click)="noteEntry()">Confirmar</button>
+        <button type="button" class="btn btn-primary me-2" (click)="test()">Confirmar</button>
         <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
       </div>
     </form>

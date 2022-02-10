@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
-import { getFirestore, collection, addDoc } from "firebase/firestore"
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const db = getFirestore(app)
 
@@ -11,7 +12,7 @@ interface NotaFiscal {
   medico: string
   paciente: string
   dataEmissao: any 
-  dataEntrada: any
+  dataMovimento: any
   item: any
   movimentacao: string
 }
@@ -23,25 +24,29 @@ interface NotaFiscal {
 })
 export class EntradaPage implements OnInit {
 
-  public noteNumber: number
+  public formNote: FormGroup
+
   public serie: number
   public volume: number
   public product: string
-  public quantitie: number
-  public provider: string
-  public doctor: string
-  public patient: string
-  public issueDate: any
   public entryDate: any
   public notaFiscal: NotaFiscal
   public itens = {}
   public movement: string
 
-  constructor(public router: Router) { }
+  constructor(public router: Router, private fb: FormBuilder) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
     localStorage.setItem('item', '1')
+
+    this.formNote = this.fb.group({
+      noteNumber: ['', Validators.required],
+      provider: ['', Validators.required],
+      issueDate: ['', Validators.required],
+      patient: ['', Validators.required],
+      doctor: ['', Validators.required],
+    })
   }
 
   async noteEntry() {
@@ -68,12 +73,12 @@ export class EntradaPage implements OnInit {
     this.entryDate = year + '-' + month + '-' + day 
 
     this.notaFiscal = {
-      numNota: this.noteNumber,
-      fornecedor: this.provider,
-      medico: this.doctor,
-      paciente: this.patient,
-      dataEmissao: this.issueDate,
-      dataEntrada: this.entryDate,
+      numNota: this.formNote.value.noteNumber,
+      fornecedor: this.formNote.value.provider,
+      medico: this.formNote.value.doctor,
+      paciente: this.formNote.value.patient,
+      dataEmissao: this.formNote.value.issueDate,
+      dataMovimento: this.entryDate,
       item: this.itens,
       movimentacao: this.movement
     }
@@ -164,5 +169,9 @@ export class EntradaPage implements OnInit {
 
   cancel() {
     this.router.navigateByUrl('/home')
+  }
+
+  test() {
+    console.log(this.formNote.value.noteNumber)
   }
 }

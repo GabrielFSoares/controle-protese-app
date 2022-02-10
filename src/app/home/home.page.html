@@ -7,6 +7,9 @@
       <div>
         <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('saida')">Nova saída</button>
       </div>
+      <div class="d-none">
+        <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('estoque')">Estoque</button>
+      </div>
     </div>
     <div class="col-9">
       <fieldset class="border-fieldset mt-3 p-3">
@@ -39,7 +42,13 @@
       </fieldset>
     </div>
 
-    <table class="table mt-5">
+    <div>
+      <button (click)="movementsLoad()" class="btn btn-primary btn-sm mt-5">
+        <ion-icon class="text-white icon" name="refresh" size="small"></ion-icon>Atualizar
+      </button>
+    </div>
+
+    <table class="table">
       <thead>
         <tr>
           <th scope="col"></th>
@@ -49,49 +58,19 @@
           <th scope="col">Paciente</th>
           <th scope="col">Data emissão</th>
           <th scope="col">Movimento</th>
-          <th scope="col">Data</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr *ngFor="let movement of movements; let i=index">
           <td scope="row" class="text-center">
-            <ion-icon class="text-primary h5 me-2" name="create"></ion-icon>
-            <ion-icon class="text-danger h5" name="trash"></ion-icon>
+            <ion-icon class="text-primary h5 me-2" name="create" (click)="openNote('kk')"></ion-icon>
           </td>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
+          <td>{{movement.numNota}}</td>
+          <td>{{movement.fornecedor}}</td>
+          <td>{{movement.medico}}</td>
+          <td>{{movement.paciente}}</td>
+          <td>{{movement.dataEmissao}}</td>
+          <td>{{movement.movimentacao}}</td>
         </tr>
       </tbody>
     </table>
