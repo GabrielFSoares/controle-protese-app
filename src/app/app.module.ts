@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomePageModule } from './home/home.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,7 +18,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     IonicModule.forRoot(), 
     AppRoutingModule, 
     HomePageModule, 
-    ModalModule.forRoot()
+    ModalModule.forRoot(), NgbModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
 import { getFirestore, collection, addDoc } from "firebase/firestore";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastController } from '@ionic/angular';
 
 const db = getFirestore(app)
 
@@ -33,8 +34,9 @@ export class EntradaPage implements OnInit {
   public notaFiscal: NotaFiscal
   public itens = {}
   public movement: string
+  public confirm: boolean
 
-  constructor(public router: Router, private fb: FormBuilder) { }
+  constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController,) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
@@ -57,45 +59,56 @@ export class EntradaPage implements OnInit {
 
     let storage = parseInt(localStorage.getItem('item'))
 
-    for(let j=0, i=1; i<=storage; i++, j++) {
-      let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
-      let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+    this.confirm = true
 
-      this.itens[j] = {
-        'descricao': this.product,
-        'serie': serie,
-        'volume': volume,
+    for(let i=1; i<=storage; i++) {
+      if((<HTMLSelectElement>document.getElementById('serie'+i.toString())).value == '' || (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value == '') {
+        this.confirm = false 
+      } 
+    }
+
+    if(!this.formNote.valid) {
+      this.confirm = false
+    }
+
+    if(this.confirm) {
+      for(let j=0, i=1; i<=storage; i++, j++) {
+        let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
+        let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+        console.log(serie)
+        this.itens[j] = {
+          'descricao': this.product,
+          'serie': serie,
+          'volume': volume,
+        }
       }
+
+      this.movement = "Entrada"
+      this.entryDate = year + '-' + month + '-' + day 
+
+      this.notaFiscal = {
+        numNota: this.formNote.value.noteNumber,
+        fornecedor: this.formNote.value.provider,
+        medico: this.formNote.value.doctor,
+        paciente: this.formNote.value.patient,
+        dataEmissao: this.formNote.value.issueDate,
+        dataMovimento: this.entryDate,
+        item: this.itens,
+        movimentacao: this.movement
+      }
+
+      const docRef = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
+
+      let docRefId = docRef.id
+
+      for(let i=0; i<storage; i++) {
+        this.itens[i].idNota = docRefId
+
+        let docRef2 = addDoc(collection(db, "Estoque"), this.itens[i])
+      }
+    } else {
+      this.openMessage('Preencha todos os campos')
     }
-
-    this.movement = "Entrada"
-
-    this.entryDate = year + '-' + month + '-' + day 
-
-    this.notaFiscal = {
-      numNota: this.formNote.value.noteNumber,
-      fornecedor: this.formNote.value.provider,
-      medico: this.formNote.value.doctor,
-      paciente: this.formNote.value.patient,
-      dataEmissao: this.formNote.value.issueDate,
-      dataMovimento: this.entryDate,
-      item: this.itens,
-      movimentacao: this.movement
-    }
-
-    const docRef = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
-
-    let docRefId = docRef.id
-
-    for(let i=0; i<storage; i++) {
-      this.itens[i].idNota = docRefId
-
-      let docRef2 = addDoc(collection(db, "Estoque"), this.itens[i])
-    }
-
-    /*let idNota = {
-      item: this.itens
-    }*/
   }
 
   addItem() {
@@ -171,7 +184,11 @@ export class EntradaPage implements OnInit {
     this.router.navigateByUrl('/home')
   }
 
-  test() {
-    console.log(this.formNote.value.noteNumber)
+  async openMessage(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 4000
+    });
+    toast.present();
   }
 }
