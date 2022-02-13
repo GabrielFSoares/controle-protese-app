@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
 import { getFirestore, collection, addDoc, query, where, getDocs, getDoc, doc, deleteDoc } from "firebase/firestore"
+import { ToastController } from '@ionic/angular';
 
 const db = getFirestore(app)
 
@@ -35,8 +36,9 @@ export class SaidaPage implements OnInit {
   public outputDate: any
   public docId: string
   public notaFiscal: NotaFiscal
+  public confirm: boolean
 
-  constructor(public router: Router) { }
+  constructor(public router: Router, public toastController: ToastController) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
@@ -54,39 +56,56 @@ export class SaidaPage implements OnInit {
 
     let storage = parseInt(localStorage.getItem('itemSaida')) 
 
-    for(let j=0, i=1; i<=storage; i++, j++) {
-      let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
-      let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+    this.confirm = true
 
-      this.itens[j] = {
-        'descricao': this.product,
-        'serie': serie,
-        'volume': volume,
+    for(let i=1; i<=storage; i++) {
+      if((<HTMLSelectElement>document.getElementById('serie'+i.toString())).value == '' || (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value == '') {
+        this.confirm = false 
+      } 
+    }
+
+    if((<HTMLSelectElement>document.getElementById('patient')).value == '' || (<HTMLSelectElement>document.getElementById('doctor')).value == '') {
+      this.confirm = false 
+    }
+ 
+    if(this.confirm) {
+      for(let j=0, i=1; i<=storage; i++, j++) {
+        let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
+        let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+  
+        this.itens[j] = {
+          'descricao': this.product,
+          'serie': serie,
+          'volume': volume,
+        }
+  
+        let q = query(collection(db, "Estoque"), where("serie", "==", this.itens[j].serie.toString()))
+        const querySnapshot = await getDocs(q)  
+  
+        querySnapshot.forEach((docc) => {
+          deleteDoc(doc(db, "Estoque", docc.id))
+          console.log('chegou')
+        })
       }
-
-      let q = query(collection(db, "Estoque"), where("serie", "==", this.itens[j].serie.toString()))
-      const querySnapshot = await getDocs(q)  
-
-      querySnapshot.forEach((docc) => {
-        deleteDoc(doc(db, "Estoque", docc.id))
-      })
+  
+      const docRef= doc(db, "NotaFiscal", this.idNota)
+      const docSnap = await getDoc(docRef)
+  
+      this.notaFiscal = {
+        numNota: docSnap.data().numNota,
+        fornecedor: docSnap.data().fornecedor,
+        medico: docSnap.data().medico,
+        paciente: docSnap.data().paciente,
+        dataEmissao: docSnap.data().dataEmissao,
+        dataMovimento: this.outputDate,
+        item: this.itens,
+        movimentacao: this.movement
+      }
+  
+      const docRef2 = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
+    } else {
+      this.openMessage('Preencha todos os campos')
     }
-
-    const docRef= doc(db, "NotaFiscal", this.idNota)
-    const docSnap = await getDoc(docRef)
-
-    this.notaFiscal = {
-      numNota: docSnap.data().numNota,
-      fornecedor: docSnap.data().fornecedor,
-      medico: docSnap.data().medico,
-      paciente: docSnap.data().paciente,
-      dataEmissao: docSnap.data().dataEmissao,
-      dataMovimento: this.outputDate,
-      item: this.itens,
-      movimentacao: this.movement
-    }
-
-    const docRef2 = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
   }
 
   addItem() {
@@ -161,6 +180,7 @@ export class SaidaPage implements OnInit {
   async loadInfo() {
     const q = query(collection(db, "Estoque"), where("serie", "==", this.serie.toString()))
     const querySnapshot = await getDocs(q)  
+    console.log(querySnapshot.docChanges())
 
     querySnapshot.forEach((doc) => {
       this.idNota = doc.data().idNota
@@ -181,5 +201,13 @@ export class SaidaPage implements OnInit {
 
   cancel() {
     this.router.navigateByUrl('/home')
+  }
+
+  async openMessage(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
   }
 }

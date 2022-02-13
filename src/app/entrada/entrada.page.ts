@@ -36,7 +36,7 @@ export class EntradaPage implements OnInit {
   public movement: string
   public confirm: boolean
 
-  constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController,) { }
+  constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
@@ -75,7 +75,7 @@ export class EntradaPage implements OnInit {
       for(let j=0, i=1; i<=storage; i++, j++) {
         let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
         let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
-        console.log(serie)
+
         this.itens[j] = {
           'descricao': this.product,
           'serie': serie,
@@ -187,7 +187,7 @@ export class EntradaPage implements OnInit {
   async openMessage(message: string) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 4000
+      duration: 2000
     });
     toast.present();
   }

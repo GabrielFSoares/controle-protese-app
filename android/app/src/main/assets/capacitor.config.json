@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "controle-protese",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
