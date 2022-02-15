@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
 import { getFirestore, collection, addDoc, query, where, getDocs, getDoc, doc, deleteDoc } from "firebase/firestore"
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 
 const db = getFirestore(app)
 
@@ -25,8 +25,7 @@ interface NotaFiscal {
 export class SaidaPage implements OnInit {
 
   public product: string
-  public serie: number
-  public volume: number
+  public serie: string
   public patient: string
   public doctor: string
   public idNota: string
@@ -38,7 +37,7 @@ export class SaidaPage implements OnInit {
   public notaFiscal: NotaFiscal
   public confirm: boolean
 
-  constructor(public router: Router, public toastController: ToastController) { }
+  constructor(public router: Router, public toastController: ToastController, public alertController: AlertController) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
@@ -53,7 +52,7 @@ export class SaidaPage implements OnInit {
 
     this.outputDate = year + '-' + month + '-' + day
     this.movement = "Saída"
-
+  
     let storage = parseInt(localStorage.getItem('itemSaida')) 
 
     this.confirm = true
@@ -78,33 +77,56 @@ export class SaidaPage implements OnInit {
           'serie': serie,
           'volume': volume,
         }
-  
-        let q = query(collection(db, "Estoque"), where("serie", "==", this.itens[j].serie.toString()))
-        const querySnapshot = await getDocs(q)  
-  
-        querySnapshot.forEach((docc) => {
-          deleteDoc(doc(db, "Estoque", docc.id))
-          console.log('chegou')
-        })
       }
-  
-      const docRef= doc(db, "NotaFiscal", this.idNota)
-      const docSnap = await getDoc(docRef)
-  
-      this.notaFiscal = {
-        numNota: docSnap.data().numNota,
-        fornecedor: docSnap.data().fornecedor,
-        medico: docSnap.data().medico,
-        paciente: docSnap.data().paciente,
-        dataEmissao: docSnap.data().dataEmissao,
-        dataMovimento: this.outputDate,
-        item: this.itens,
-        movimentacao: this.movement
+
+      if(this.idNota !== null) {
+        const docRef= doc(db, "NotaFiscal", this.idNota)
+        const docSnap = await getDoc(docRef)
+
+        let docId = []
+        let compare = 0
+    
+        this.notaFiscal = {
+          numNota: docSnap.data().numNota,
+          fornecedor: docSnap.data().fornecedor,
+          medico: docSnap.data().medico,
+          paciente: docSnap.data().paciente,
+          dataEmissao: docSnap.data().dataEmissao,
+          dataMovimento: this.outputDate,
+          item: this.itens,
+          movimentacao: this.movement
+        }
+
+        for(let i=0; i<storage; i++) {
+          let q = query(collection(db, "Estoque"), where("serie", "==", this.itens[i].serie.toString()))
+          let querySnapshot = await getDocs(q)  
+
+          if(querySnapshot.docChanges().length != 0) {
+            querySnapshot.forEach((docc) => {
+            //deleteDoc(doc(db, "Estoque", docc.id))
+            docId[i] = docc.id
+            compare++
+            })
+          }
+        }
+
+        if(compare == storage) {
+          const docRef2 = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
+
+          for(let i=0; i<docId.length; i++) {
+            deleteDoc(doc(db, "Estoque", docId[i]))
+          }
+
+          this.presentAlert('Saída realizada com sucesso!')
+          this.router.navigateByUrl('/home')
+        } else {
+          this.presentAlert('Um ou mais itens não correspondem ao estoque')
+        }
+      } else {
+        this.presentAlert('Um ou mais itens não correspondem ao estoque')
       }
-  
-      const docRef2 = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
     } else {
-      this.openMessage('Preencha todos os campos')
+      this.presentAlert('Preencha todos os campos')
     }
   }
 
@@ -142,6 +164,9 @@ export class SaidaPage implements OnInit {
     inputCol1.placeholder = 'Número de série'
     inputCol1.type = 'number'
     inputCol1.id = 'serie'+id.toString()
+    inputCol1.addEventListener("keyup", () => {
+      this.loadInfo(id)
+    })
 
     divRow.appendChild(divCol1)
     divCol1.appendChild(inputCol1)
@@ -177,14 +202,16 @@ export class SaidaPage implements OnInit {
     divCol3.appendChild(icon)
   }
 
-  async loadInfo() {
-    const q = query(collection(db, "Estoque"), where("serie", "==", this.serie.toString()))
+  async loadInfo(id) {
+    this.serie = (<HTMLSelectElement>document.getElementById('serie'+id.toString())).value
+    const q = query(collection(db, "Estoque"), where("serie", "==", this.serie))
     const querySnapshot = await getDocs(q)  
     console.log(querySnapshot.docChanges())
+    this.idNota = null
 
     querySnapshot.forEach((doc) => {
-      this.idNota = doc.data().idNota
-      this.volume = doc.data().volume
+      this.idNota = doc.data().idNota;
+      (<HTMLSelectElement>document.getElementById('volume'+id.toString())).value = doc.data().volume
       this.conf = true
     })
 
@@ -209,5 +236,15 @@ export class SaidaPage implements OnInit {
       duration: 2000
     });
     toast.present();
+  }
+
+  async presentAlert(message) {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-alert',
+      message: message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 }

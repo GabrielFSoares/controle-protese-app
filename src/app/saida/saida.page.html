@@ -14,10 +14,10 @@
           </select>
           <div class="row my-2">
             <div class="col-4">
-              <input id="serie1" (keyup)="loadInfo()" class="form-control" name="serie" [(ngModel)]="serie" type="number" placeholder="Número de série">
+              <input id="serie1" (keyup)="loadInfo(1)" class="form-control" name="serie" type="number" placeholder="Número de série">
             </div>
             <div class="col-4">
-              <input id="volume1" class="form-control" type="number" name="volume" [(ngModel)]="volume" placeholder="Volume">
+              <input id="volume1" class="form-control" type="number" name="volume" placeholder="Volume">
             </div>
             <div id="icon" class="col-4 text-end">
               <ion-icon id="add" name="add-circle" size="large" (click)="addItem()"></ion-icon>
