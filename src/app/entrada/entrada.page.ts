@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 
 const db = getFirestore(app)
 
@@ -36,7 +36,7 @@ export class EntradaPage implements OnInit {
   public movement: string
   public confirm: boolean
 
-  constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController) { }
+  constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController, public alertController: AlertController) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
@@ -62,7 +62,7 @@ export class EntradaPage implements OnInit {
     this.confirm = true
 
     for(let i=1; i<=storage; i++) {
-      if((<HTMLSelectElement>document.getElementById('serie'+i.toString())).value == '' || (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value == '') {
+      if((<HTMLSelectElement>document.getElementById('serie'+i.toString())).value == '') {
         this.confirm = false 
       } 
     }
@@ -72,43 +72,68 @@ export class EntradaPage implements OnInit {
     }
 
     if(this.confirm) {
-      for(let j=0, i=1; i<=storage; i++, j++) {
-        let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
-        let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+      const q = query(collection(db, "NotaFiscal"), where("numNota", "==", this.formNote.value.noteNumber))
+      const querySnapshot = await getDocs(q)  
 
-        this.itens[j] = {
-          'descricao': this.product,
-          'serie': serie,
-          'volume': volume,
+      let serieExist = false
+
+      for(let i=1; i<=storage; i++) {
+        const q2 = query(collection(db, "Estoque"), where("serie", "==", (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value))
+        const querySnapshot2 = await getDocs(q2)
+
+        console.log(querySnapshot2.size)
+
+        if(querySnapshot2.size != 0) {
+          serieExist = true
         }
       }
 
-      this.movement = "Entrada"
-      this.entryDate = year + '-' + month + '-' + day 
+      if(querySnapshot.size != 0) {
+        this.presentAlert('Nota já cadastrada')
+      } else if(serieExist) {
+          this.presentAlert('Número de série de um ou mais produtos já exixtem no estoque')
+        } else {
+            for(let j=0, i=1; i<=storage; i++, j++) {
+              let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
+              let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
 
-      this.notaFiscal = {
-        numNota: this.formNote.value.noteNumber,
-        fornecedor: this.formNote.value.provider,
-        medico: this.formNote.value.doctor,
-        paciente: this.formNote.value.patient,
-        dataEmissao: this.formNote.value.issueDate,
-        dataMovimento: this.entryDate,
-        item: this.itens,
-        movimentacao: this.movement
-      }
+              this.itens[j] = {
+                'descricao': this.product,
+                'serie': serie,
+                'volume': volume,
+              }
+            }
 
-      const docRef = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
+            this.movement = "Entrada"
+            this.entryDate = year + '-' + month + '-' + day 
 
-      let docRefId = docRef.id
+            this.notaFiscal = {
+              numNota: this.formNote.value.noteNumber,
+              fornecedor: this.formNote.value.provider,
+              medico: this.formNote.value.doctor,
+              paciente: this.formNote.value.patient,
+              dataEmissao: this.formNote.value.issueDate,
+              dataMovimento: this.entryDate,
+              item: this.itens,
+              movimentacao: this.movement
+            }
 
-      for(let i=0; i<storage; i++) {
-        this.itens[i].idNota = docRefId
+            const docRef = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
 
-        let docRef2 = addDoc(collection(db, "Estoque"), this.itens[i])
-      }
+            let docRefId = docRef.id
+
+            for(let i=0; i<storage; i++) {
+              this.itens[i].idNota = docRefId
+
+              let docRef2 = addDoc(collection(db, "Estoque"), this.itens[i])
+            }
+
+            this.presentAlert('Entrada confirmada!')
+            this.router.navigateByUrl('/home')
+          }
     } else {
       this.openMessage('Preencha todos os campos')
-    }
+      }
   }
 
   addItem() {
@@ -190,5 +215,22 @@ export class EntradaPage implements OnInit {
       duration: 2000
     });
     toast.present();
+  }
+
+  async presentAlert(message) {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-alert',
+      message: message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  async test() {
+    const q = query(collection(db, "NotaFiscal"), where("numNota", "==", 18100856))
+    const querySnapshot = await getDocs(q)  
+
+    console.log(querySnapshot.size)
   }
 }
