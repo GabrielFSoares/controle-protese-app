@@ -21,6 +21,7 @@ export class HomePage {
   public date: string
   public movements: any
   public docId: any
+  public itens: any
 
   constructor(private modalService: BsModalService, public router: Router) { }
 
@@ -51,20 +52,28 @@ export class HomePage {
   async movementsLoad() {
     const q = query(collection(db, "NotaFiscal"))
     const querySnapshot = await getDocs(q)
-    let index = 0
+    
     this.movements = []
-    this.docId = [{}]
+    this.docId = []
+    this.itens = []
 
     querySnapshot.forEach((doc) => {
       this.movements.push(doc.data()) 
       this.docId.push(doc.id)
-    })
+     
+      let obj = doc.data().item
+      let index = Object.keys(obj)
+      let arr = []
 
-    console.log(this.movements)
-    console.log(this.docId[0])
+      for(let i=0; i<index.length; i++) {
+        arr.push(doc.data().item[i].serie)
+      }
+
+      this.itens.push(arr)
+    })
   }
 
   openNote(id) {
-    console.log(id)
+    console.log(this.docId[id])
   }
 }

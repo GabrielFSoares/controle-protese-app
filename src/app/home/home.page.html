@@ -53,6 +53,7 @@
         <tr>
           <th scope="col"></th>
           <th scope="col">N° nota</th>
+          <th scope="col">Série(s)</th>
           <th scope="col">Fornecedor</th>
           <th scope="col">Médico</th>
           <th scope="col">Paciente</th>
@@ -63,9 +64,10 @@
       <tbody>
         <tr *ngFor="let movement of movements; let i=index">
           <td scope="row" class="text-center">
-            <ion-icon class="text-primary h5 me-2" name="create" (click)="openNote('kk')"></ion-icon>
+            <ion-icon class="text-primary h5 me-2" name="create" (click)="openNote(i)"></ion-icon>
           </td>
           <td>{{movement.numNota}}</td>
+          <td><span class="d-block" *ngFor="let item of itens[i]">{{item}}</span></td>
           <td>{{movement.fornecedor}}</td>
           <td>{{movement.medico}}</td>
           <td>{{movement.paciente}}</td>
