@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { app } from '../firebaseConfig';
 import { getFirestore, collection, query, getDocs } from "firebase/firestore";
+import { ModalController } from '@ionic/angular';
+import { ModalEntryNoteComponent } from '../components/modal-entry-note/modal-entry-note.component';
 
 const db = getFirestore(app)
 
@@ -23,18 +25,20 @@ export class HomePage {
   public docId: any
   public itens: any
 
-  constructor(private modalService: BsModalService, public router: Router) { }
+  constructor(private modalService: BsModalService, public router: Router, public modalController: ModalController) { }
 
   ngOnInit() {
     this.movementsLoad()
   }
 
-  openModal(template: TemplateRef<any>) {
+  openModal(template: TemplateRef<any>, i: number) {
     this.modalRef = this.modalService.show(template, 
       { 
-        class: 'modal-dialogue-centered modal-xl',
+        class: 'm-0 modal-xl',
         backdrop: 'static',
       })
+
+    console.log(this.docId[i])
   }
 
   navigate(route:string) {
@@ -75,5 +79,16 @@ export class HomePage {
 
   openNote(id) {
     console.log(this.docId[id])
+  }
+
+  async presentModal(i: number) {
+    const modal = await this.modalController.create({
+      component: ModalEntryNoteComponent,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        'idNota': this.docId[i]
+      }
+    });
+    return await modal.present();
   }
 }
