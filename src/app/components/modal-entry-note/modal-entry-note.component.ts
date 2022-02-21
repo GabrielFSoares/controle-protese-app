@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Input } from '@angular/core';
 import { app } from '../../firebaseConfig';
-import { getFirestore, addDoc, getDoc, doc } from "firebase/firestore"
+import { getFirestore, getDoc, doc } from "firebase/firestore";
 
 const db = getFirestore(app)
 
@@ -28,19 +28,15 @@ export class ModalEntryNoteComponent implements OnInit {
   public noteNumber: number
   public itens: any
 
-  constructor(public modalController: ModalController) { }
+  constructor(public modalController: ModalController) {  }
 
   ngOnInit() {
     this.loadInfo()
-
-    this.provider= 'tua mãe'
-
-    console.log(this.idNota)
   }
 
   async loadInfo() {
     const docRef= doc(db, "NotaFiscal", this.idNota)
-    const docSnap = await getDoc(docRef)
+    const docSnap = await getDoc(docRef);
 
     this.noteNumber = docSnap.data().numNota,
     this.provider = docSnap.data().fornecedor,

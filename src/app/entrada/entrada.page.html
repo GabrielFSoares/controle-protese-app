@@ -27,7 +27,10 @@
         </div>
         <div class="col-6">
           <p>Médico: </p>
-          <input class="form-control" formControlName="doctor" type="text" name="doctor" placeholder="Nome do médico"/>
+          <select formControlName="doctor" class="form-select">
+            <option value="">Selecione um Médico</option>
+            <option *ngFor="let doctor of doctorList">{{doctor}}</option>
+          </select>
         </div>
       </div>
       <p>Itens:</p>

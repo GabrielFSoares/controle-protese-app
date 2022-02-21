@@ -35,6 +35,7 @@ export class EntradaPage implements OnInit {
   public itens = {}
   public movement: string
   public confirm: boolean
+  public doctorList = []
 
   constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController, public alertController: AlertController) { }
 
@@ -49,6 +50,36 @@ export class EntradaPage implements OnInit {
       patient: ['', Validators.required],
       doctor: ['', Validators.required],
     })
+
+    this.doctorList = [
+      'Marcelo Alonso',
+      'Felipe Magno',
+      'Marcio Teixeira',
+      'Marcio Bistene',
+      'Marcio Wallace',
+      'Ramon Ramalho',
+      'Orido Pinheiro',
+      'Orido Felipe',
+      'Acrysio Peixoto',
+      'Eduardo Sucupira',
+      'Fernando Serra',
+      'Renata Wanick',
+      'Flavia Dantas',
+      'Sílvia Baima',
+      'Roberta Alvares',
+      'Guilherme Miranda',
+      'Ricardo Cunha',
+      'Adriano Medeiros',
+      'José Horácio',
+      'Horácio Gomes',
+      'Renato Monteiro',
+      'Gustavo Merheb',
+      'George Soares',
+      'George Mofoud',
+      'Bruno Herkenhoff',
+      'Ruben Bartz',
+      'Bruno Anastácio'
+    ]
   }
 
   async noteEntry() {
