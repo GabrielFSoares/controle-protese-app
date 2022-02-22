@@ -28,16 +28,27 @@
         <p>Médico: </p><input class="form-control" type="text" name="doctor" [(ngModel)]="doctor" placeholder="Nome do médico" disabled>
       </div>
     </div>
-    <p class="mt-5">Itens:</p>
-    <div class="row" *ngFor="let item of itens">
+    <div class="row">
       <div class="col-4">
-        <input class="form-control" type="text" placeholder="Item" disabled>
+        <p class="mt-5">Item(s):</p>
       </div>
       <div class="col-4">
-        <input class="form-control" type="number" placeholder="Serie" disabled>
+        <p class="mt-5">Serie(s):</p>
       </div>
       <div class="col-4">
-        <input class="form-control" type="number" placeholder="Volume" disabled>
+        <p class="mt-5">Volume(s):</p>
+      </div>
+    </div>
+    
+    <div class="row mb-3" *ngFor="let item of itens; let i=index">
+      <div class="col-4">
+        <input class="form-control" type="text" placeholder="Item" value="{{item.descricao}}" disabled>
+      </div>
+      <div class="col-4">
+        <input class="form-control" type="number" placeholder="Serie" value="{{item.serie}}" disabled>
+      </div>
+      <div class="col-4">
+        <input class="form-control" type="number" placeholder="Volume" value="{{item.volume}}" disabled>
       </div>
     </div>
     <div class="my-3 text-end">

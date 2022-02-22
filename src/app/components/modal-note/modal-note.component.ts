@@ -26,7 +26,7 @@ export class ModalNoteComponent implements OnInit {
   public movement: string
   public provider: string
   public noteNumber: number
-  public itens: any
+  public itens = []
 
   constructor(public modalController: ModalController) {  }
 
@@ -44,8 +44,14 @@ export class ModalNoteComponent implements OnInit {
     this.patient = docSnap.data().paciente,
     this.issueDate = docSnap.data().dataEmissao,
     this.date = docSnap.data().dataMovimento,
-    this.itens = this.itens,
     this.movement = docSnap.data().movimentacao
+
+    let obj = docSnap.data().item
+    let index = Object.keys(obj)
+
+    for(let i=0; i<index.length; i++) {
+      this.itens.push(docSnap.data().item[i])
+    }
   }
 
   dismiss() {
