@@ -36,6 +36,7 @@ export class EntradaPage implements OnInit {
   public movement: string
   public confirm: boolean
   public doctorList = []
+  public providerList = []
 
   constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController, public alertController: AlertController) { }
 
@@ -80,12 +81,14 @@ export class EntradaPage implements OnInit {
       'Ruben Bartz',
       'Bruno Anastácio'
     ]
+
+    this.providerList = ['SILIMED', 'POLYTECH', 'MOTIVA', 'MENTOR']
   }
 
   async noteEntry() {
     let date = new Date()
-    let day = date.getDate()
-    let month = date.getMonth() + 1
+    let day = ('0' + date.getDate()).slice(-2)
+    let month = ('0' + date.getMonth() + 1).slice(-2)
     let year = date.getFullYear()
 
     let storage = parseInt(localStorage.getItem('item'))
@@ -256,12 +259,5 @@ export class EntradaPage implements OnInit {
     });
 
     await alert.present();
-  }
-
-  async test() {
-    const q = query(collection(db, "NotaFiscal"), where("numNota", "==", 18100856))
-    const querySnapshot = await getDocs(q)  
-
-    console.log(querySnapshot.size)
   }
 }

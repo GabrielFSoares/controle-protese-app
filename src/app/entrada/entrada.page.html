@@ -13,7 +13,10 @@
         </div>
         <div class="col-4">
           <p>Fornecedor: </p>
-          <input class="form-control" formControlName="provider" type="text" name="provider"/>
+          <select formControlName="provider" class="form-select">
+            <option value="">Selecione</option>
+            <option *ngFor="let provider of providerList">{{provider}}</option>
+          </select>
         </div>
         <div class="col-5">
           <p>Data de emissão: </p>
