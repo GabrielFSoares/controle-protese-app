@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ModalEntryNoteComponent } from './modal-entry-note.component';
+import { ModalNoteComponent } from './modal-note.component';
 
-describe('ModalEntryNoteComponent', () => {
-  let component: ModalEntryNoteComponent;
-  let fixture: ComponentFixture<ModalEntryNoteComponent>;
+describe('ModalNoteComponent', () => {
+  let component: ModalNoteComponent;
+  let fixture: ComponentFixture<ModalNoteComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ModalEntryNoteComponent ],
+      declarations: [ ModalNoteComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ModalEntryNoteComponent);
+    fixture = TestBed.createComponent(ModalNoteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -6,7 +6,7 @@ import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { ModalEntryNoteComponent } from '../components/modal-entry-note/modal-entry-note.component';
+import { ModalNoteComponent } from '../components/modal-note/modal-note.component';
 
 
 @NgModule({
@@ -19,6 +19,6 @@ import { ModalEntryNoteComponent } from '../components/modal-entry-note/modal-en
     ModalModule.forRoot()
   ],
   exports: [ModalModule],
-  declarations: [HomePage, ModalEntryNoteComponent]
+  declarations: [HomePage, ModalNoteComponent]
 })
 export class HomePageModule {}

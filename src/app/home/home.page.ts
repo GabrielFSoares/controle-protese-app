@@ -4,7 +4,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { app } from '../firebaseConfig';
 import { getFirestore, collection, query, getDocs } from "firebase/firestore";
 import { ModalController } from '@ionic/angular';
-import { ModalEntryNoteComponent } from '../components/modal-entry-note/modal-entry-note.component';
+import { ModalNoteComponent } from '../components/modal-note/modal-note.component';
 
 const db = getFirestore(app)
 
@@ -83,7 +83,7 @@ export class HomePage {
 
   async presentModal(i: number) {
     const modal = await this.modalController.create({
-      component: ModalEntryNoteComponent,
+      component: ModalNoteComponent,
       cssClass: 'my-custom-class',
       componentProps: {
         'idNota': this.docId[i]

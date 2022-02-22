@@ -7,12 +7,12 @@ import { getFirestore, getDoc, doc } from "firebase/firestore";
 const db = getFirestore(app)
 
 @Component({
-  selector: 'app-modal-entry-note',
-  templateUrl: './modal-entry-note.component.html',
-  styleUrls: ['./modal-entry-note.component.scss']
+  selector: 'app-modal-note',
+  templateUrl: './modal-note.component.html',
+  styleUrls: ['./modal-note.component.scss']
 })
 
-export class ModalEntryNoteComponent implements OnInit {
+export class ModalNoteComponent implements OnInit {
 
   @Input() idNota: string
 
