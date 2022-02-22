@@ -36,18 +36,49 @@ export class SaidaPage implements OnInit {
   public docId: string
   public notaFiscal: NotaFiscal
   public confirm: boolean
+  public doctorList = []
 
   constructor(public router: Router, public toastController: ToastController, public alertController: AlertController) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
     localStorage.setItem('itemSaida', '1')
+
+    this.doctorList = [
+      'Marcelo Alonso',
+      'Felipe Magno',
+      'Marcio Teixeira',
+      'Marcio Bistene',
+      'Marcio Wallace',
+      'Ramon Ramalho',
+      'Orido Pinheiro',
+      'Orido Felipe',
+      'Acrysio Peixoto',
+      'Eduardo Sucupira',
+      'Fernando Serra',
+      'Renata Wanick',
+      'Flavia Dantas',
+      'Sílvia Baima',
+      'Roberta Alvares',
+      'Guilherme Miranda',
+      'Ricardo Cunha',
+      'Adriano Medeiros',
+      'José Horácio',
+      'Horácio Gomes',
+      'Renato Monteiro',
+      'Gustavo Merheb',
+      'George Soares',
+      'George Mofoud',
+      'Bruno Herkenhoff',
+      'Ruben Bartz',
+      'Bruno Anastácio'
+    ]
   }
 
   async noteOutput() {
     let date = new Date()
-    let day = date.getDate()
-    let month = date.getMonth() + 1
+    let day = ('0' + date.getDate()).slice(-2)
+    let month = ('0' + date.getMonth() + 1).slice(-2)
     let year = date.getFullYear()
 
     this.outputDate = year + '-' + month + '-' + day
@@ -58,12 +89,12 @@ export class SaidaPage implements OnInit {
     this.confirm = true
 
     for(let i=1; i<=storage; i++) {
-      if((<HTMLSelectElement>document.getElementById('serie'+i.toString())).value == '' || (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value == '') {
+      if((<HTMLSelectElement>document.getElementById('serie'+i.toString())).value == '') {
         this.confirm = false 
       } 
     }
 
-    if((<HTMLSelectElement>document.getElementById('patient')).value == '' || (<HTMLSelectElement>document.getElementById('doctor')).value == '') {
+    if(this.patient == '' || this.doctor == '') {
       this.confirm = false 
     }
  
@@ -89,8 +120,8 @@ export class SaidaPage implements OnInit {
         this.notaFiscal = {
           numNota: docSnap.data().numNota,
           fornecedor: docSnap.data().fornecedor,
-          medico: docSnap.data().medico,
-          paciente: docSnap.data().paciente,
+          medico: this.doctor,
+          paciente: this.patient,
           dataEmissao: docSnap.data().dataEmissao,
           dataMovimento: this.outputDate,
           item: this.itens,
@@ -246,5 +277,9 @@ export class SaidaPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  test() {
+    console.log(this.doctor)
   }
 }

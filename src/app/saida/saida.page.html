@@ -27,10 +27,15 @@
       </div>
       <div class="row my-2">
         <div class="col-6">
-          <p>Paciente: </p><input class="form-control" id="patient" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+          <p>Paciente: </p>
+          <input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
         </div>
         <div class="col-6">
-          <p>Médico: </p><input class="form-control" id="doctor" type="text" name="doctor" [(ngModel)]="doctor" placeholder="Nome do médico">
+          <p>Médico: </p>
+          <select [(ngModel)]="doctor" class="form-select">
+            <option value="" selected>Selecione um Médico</option>
+            <option *ngFor="let doctor of doctorList">{{doctor}}</option>
+          </select>
         </div>
       </div>
       <div class="my-3 text-end">
