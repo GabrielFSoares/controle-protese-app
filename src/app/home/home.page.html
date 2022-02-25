@@ -18,24 +18,53 @@
         <form class="mt-4">
           <div class="row">
             <div class="col-3">
-              <p>N° da nota: </p><input class="form-control" type="number" [(ngModel)]="noteNumber" name="note">
-            </div>
-            <div class="col-5">
-              <p>Paciente: </p><input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+              <p>N° da nota: </p>
+              <input class="form-control" type="number" [(ngModel)]="noteNumber" name="note">
             </div>
             <div class="col-4">
-              <p>Médico: </p><input class="form-control" type="text" name="doctor" [(ngModel)]="doctor" placeholder="Nome do médico">
+              <p>Fornecedor: </p>
+              <select [(ngModel)]="provider" name="provider" class="form-select">
+                <option value="">Selecione um fornecedor</option>
+                <option *ngFor="let provider of providerList">{{provider}}</option>
+              </select>
+            </div>
+            <div class="col-5">
+              <p>Data Emissão: </p>
+              <input class="form-control" type="date" name="issueDate" [(ngModel)]="issueDate">
             </div>
           </div>
           <div class="row mt-2">
-            <div class="col-6">
-              <p>Fornecedor: </p><input class="form-control" type="text" [(ngModel)]="provider" name="provider">
-            </div>
             <div class="col-4">
-              <p>Data: </p><input class="form-control" type="date" name="date" [(ngModel)]="date" placeholder="Nome do paciente">
+              <p>Paciente: </p>
+              <input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+            </div>
+            <div class="col-5">
+              <p>Médico: </p>
+              <select [(ngModel)]="doctor" name="doctor" class="form-select">
+                <option value="">Selecione um médico</option>
+                <option *ngFor="let doctor of doctorList">{{doctor}}</option>
+              </select>
+            </div>
+            <div class="col-3">
+              <p>Movimento: </p>
+              <select [(ngModel)]="movement" name="movement" class="form-select">
+                <option value=""></option>
+                <option>Entrada</option>
+                <option>Saída</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-5">
+              <p>Série: </p>
+              <input class="form-control" type="number" name="serie" [(ngModel)]="serie" placeholder="Série do produto">
+            </div>
+            <div class="col-5">
+              <p>Data do movimento: </p>
+              <input class="form-control" type="date" name="date" [(ngModel)]="date">
             </div>
             <div class="col-2 align-self-end text-end">
-              <a (click)="consulta()"><ion-icon name="search" size="large"></ion-icon></a>
+              <a (click)="test()"><ion-icon name="search" size="large"></ion-icon></a>
             </div>
           </div>
         </form>
@@ -62,6 +91,9 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="!loadNote">
+          <td colspan="8" class="text-center">Nenhum resultado encontrado</td>
+        </tr>
         <tr *ngFor="let movement of movements; let i=index">
           <td scope="row" class="text-center">
             <ion-icon class="text-primary h5 me-2" name="create" (click)="presentModal(i)"></ion-icon>
