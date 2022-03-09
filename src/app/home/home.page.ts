@@ -69,31 +69,45 @@ export class HomePage {
     this.providerList = ['SILIMED', 'POLYTECH', 'MOTIVA', 'MENTOR']
   }
 
-  openModal(template: TemplateRef<any>, i: number) {
-    this.modalRef = this.modalService.show(template, 
-      { 
-        class: 'm-0 modal-xl',
-        backdrop: 'static',
-      })
-
-    console.log(this.docId[i])
-  }
-
   navigate(route:string) {
     this.router.navigateByUrl(`/${route}`)
   }
 
-  consulta() {
-    console.log(this.noteNumber)
-    console.log(this.patient)
-    console.log(this.doctor)
-    console.log(this.provider)
-    console.log(this.date)
-  }
-
   async movementsLoad() {
-    const q = query(collection(db, "NotaFiscal"))
-    const querySnapshot = await getDocs(q)
+    const notesRef = query(collection(db, "NotaFiscal"))
+
+    let filter = query(notesRef)
+
+    if(this.noteNumber != undefined && this.noteNumber != null) {
+      filter = query(filter, where("numNota", "==", this.noteNumber))
+    }
+
+    if(this.provider != undefined && this.provider != '') {
+      filter = query(filter, where("fornecedor", "==", this.provider))
+    }
+
+    if(this.patient != undefined && this.patient != '') {
+      filter = query(filter, where("paciente", ">=", this.patient))
+    }
+
+    if(this.doctor != undefined && this.doctor != '') {
+      filter = query(filter, where("medico", "==", this.doctor))
+    }
+
+    if(this.movement != undefined && this.movement != '') {
+      filter = query(filter, where("movimentacao", "==", this.movement))
+    }
+
+    if(this.serie != undefined && this.serie != null) {
+      filter = query(filter, where("item", "array-contains-any", [this.serie]))
+    }
+
+    const querySnapshot = await getDocs(filter)
+
+    this.movements = []
+    this.loadNote = false
+    this.docId = []
+    this.itens = []
 
     querySnapshot.forEach((doc) => {
       this.movements.push(doc.data()) 
@@ -124,41 +138,5 @@ export class HomePage {
       }
     });
     return await modal.present();
-  }
-
-  async test() {
-    const notesRef = collection(db, "NotaFiscal")
-
-    let filter = query(notesRef)
-
-    if(this.noteNumber != undefined && this.noteNumber != null) {
-      filter = query(filter, where("numNota", "==", this.noteNumber))
-    }
-
-    if(this.provider != undefined && this.provider != '') {
-      filter = query(filter, where("fornecedor", "==", this.provider))
-    }
-
-    if(this.patient != undefined && this.patient != '') {
-      filter = query(filter, where("paciente", "==", this.patient))
-    }
-
-    if(this.doctor != undefined && this.doctor != '') {
-      filter = query(filter, where("medico", "==", this.doctor))
-    }
-
-    if(this.movement != undefined && this.movement != '') {
-      filter = query(filter, where("movimentacao", "==", this.movement))
-    }
-
-    /*if(this.serie != undefined && this.serie != null) {
-      filter = query(filter, where("item.0.serie", "==", this.serie))
-    }*/
-
-    const querySnapshot = await getDocs(filter)
-
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data())
-    })
   }
 }
