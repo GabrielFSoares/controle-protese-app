@@ -30,6 +30,7 @@ export class HomePage {
   public doctorList = []
   public providerList = []
   public loadNote = false
+  public filterSerie = false
 
   constructor(private modalService: BsModalService, public router: Router, public modalController: ModalController) { }
 
@@ -98,8 +99,16 @@ export class HomePage {
       filter = query(filter, where("movimentacao", "==", this.movement))
     }
 
+    if(this.issueDate != undefined && this.issueDate != '') {
+      filter = query(filter, where("dataEmissao", "==", this.issueDate))
+    }
+
+    if(this.date != undefined && this.date != '') {
+      filter = query(filter, where("dataMovimento", "==", this.date))
+    }
+
     if(this.serie != undefined && this.serie != null) {
-      filter = query(filter, where("item", "array-contains-any", [this.serie]))
+      this.filterSerie = true
     }
 
     const querySnapshot = await getDocs(filter)
@@ -109,20 +118,35 @@ export class HomePage {
     this.docId = []
     this.itens = []
 
-    querySnapshot.forEach((doc) => {
-      this.movements.push(doc.data()) 
-      this.docId.push(doc.id)
-     
+    querySnapshot.forEach((doc) => {     
       let obj = doc.data().item
       let index = Object.keys(obj)
       let arr = []
 
-      for(let i=0; i<index.length; i++) {
-        arr.push(doc.data().item[i].serie)
-      }
+      if(this.filterSerie) {
+        for(let i=0; i<index.length; i++) {
+          if(doc.data().item[i].serie == this.serie) {
+            for(let j=0; j<index.length; j++) {
+              arr.push(doc.data().item[j].serie)
+            }
+            this.movements.push(doc.data()) 
+            this.docId.push(doc.id)
+            this.itens.push(arr)
+          }
+        }
 
-      this.itens.push(arr)
+      } else {
+        for(let i=0; i<index.length; i++) {
+          arr.push(doc.data().item[i].serie)
+        }
+
+        this.movements.push(doc.data()) 
+        this.docId.push(doc.id)
+        this.itens.push(arr)
+      }
     })
+
+    this.filterSerie = false
 
     if(this.movements.length != 0) {
       this.loadNote = true 
