@@ -2,7 +2,7 @@ import { Component, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { app } from '../firebaseConfig';
-import { getFirestore, collection, query, getDocs, where } from "firebase/firestore";
+import { getFirestore, collection, query, getDocs, where, orderBy } from "firebase/firestore";
 import { ModalController } from '@ionic/angular';
 import { ModalNoteComponent } from '../components/modal-note/modal-note.component';
 
@@ -87,10 +87,6 @@ export class HomePage {
       filter = query(filter, where("fornecedor", "==", this.provider))
     }
 
-    if(this.patient != undefined && this.patient != '') {
-      filter = query(filter, where("paciente", ">=", this.patient))
-    }
-
     if(this.doctor != undefined && this.doctor != '') {
       filter = query(filter, where("medico", "==", this.doctor))
     }
@@ -145,6 +141,21 @@ export class HomePage {
         this.itens.push(arr)
       }
     })
+
+    if(this.patient != undefined && this.patient != '') {
+      let filterName = []
+
+      this.patient = this.patient.toLowerCase()
+      this.patient = this.patient[0].toUpperCase() + this.patient.substr(1)
+
+      for(let i=0; i<this.movements.length; i++) {
+        if(this.movements[i].paciente.indexOf(this.patient) > -1) {
+          filterName.push(this.movements[i])
+        }
+      }
+
+      this.movements = filterName
+    }
 
     this.filterSerie = false
 
