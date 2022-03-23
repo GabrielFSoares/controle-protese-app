@@ -77,7 +77,7 @@ export class HomePage {
   async movementsLoad() {
     const notesRef = query(collection(db, "NotaFiscal"))
 
-    let filter = query(notesRef)
+    let filter = query(notesRef, orderBy('dataEmissao', 'desc'))
 
     if(this.noteNumber != undefined && this.noteNumber != null) {
       filter = query(filter, where("numNota", "==", this.noteNumber))
