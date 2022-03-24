@@ -103,7 +103,7 @@
           <td>{{movement.fornecedor}}</td>
           <td>{{movement.medico}}</td>
           <td>{{movement.paciente}}</td>
-          <td>{{movement.dataEmissao}}</td>
+          <td>{{movement.dataEmissao | date: 'dd/MM/yyyy'}}</td>
           <td>{{movement.movimentacao}}</td>
         </tr>
       </tbody>

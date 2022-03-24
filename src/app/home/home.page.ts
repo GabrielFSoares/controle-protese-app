@@ -76,8 +76,13 @@ export class HomePage {
 
   async movementsLoad() {
     const notesRef = query(collection(db, "NotaFiscal"))
+    let filter = query(notesRef)
 
-    let filter = query(notesRef, orderBy('dataEmissao', 'desc'))
+    if(this.issueDate != undefined && this.issueDate != '') {
+      filter = query(notesRef, where("dataEmissao", "==", this.issueDate))
+    } else {
+      filter = query(notesRef, orderBy('dataEmissao', 'desc'))
+    }
 
     if(this.noteNumber != undefined && this.noteNumber != null) {
       filter = query(filter, where("numNota", "==", this.noteNumber))
@@ -93,10 +98,6 @@ export class HomePage {
 
     if(this.movement != undefined && this.movement != '') {
       filter = query(filter, where("movimentacao", "==", this.movement))
-    }
-
-    if(this.issueDate != undefined && this.issueDate != '') {
-      filter = query(filter, where("dataEmissao", "==", this.issueDate))
     }
 
     if(this.date != undefined && this.date != '') {

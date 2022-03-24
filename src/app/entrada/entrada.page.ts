@@ -88,11 +88,11 @@ export class EntradaPage implements OnInit {
   async noteEntry() {
     let date = new Date()
     let day = ('0' + date.getDate()).slice(-2)
-    let month = ('0' + date.getMonth() + 1).slice(-2)
+    let month = ('0' + (date.getMonth() + 1)).slice(-2)
     let year = date.getFullYear()
 
     let storage = parseInt(localStorage.getItem('item'))
-
+    
     this.confirm = true
 
     for(let i=1; i<=storage; i++) {
@@ -114,8 +114,6 @@ export class EntradaPage implements OnInit {
       for(let i=1; i<=storage; i++) {
         const q2 = query(collection(db, "Estoque"), where("serie", "==", (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value))
         const querySnapshot2 = await getDocs(q2)
-
-        console.log(querySnapshot2.size)
 
         if(querySnapshot2.size != 0) {
           serieExist = true
