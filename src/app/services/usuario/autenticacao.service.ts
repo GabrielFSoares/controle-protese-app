@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { app } from '../../firebaseConfig';
 import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
@@ -11,7 +12,7 @@ const auth = getAuth();
 })
 export class AutenticacaoService {
 
-  constructor() { }
+  constructor(public router: Router) { }
 
   async loginFirebase(user:string, password:string) {
     let email = ''
@@ -25,8 +26,8 @@ export class AutenticacaoService {
     if(email != '') {
       signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user
-        console.log('logado')
+        localStorage.setItem('user', user)
+        this.router.navigateByUrl('/home')
       })
       .catch((error) => {
         const errorCode = error.code

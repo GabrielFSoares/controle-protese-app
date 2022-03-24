@@ -1,21 +1,23 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>login</ion-title>
+    <ion-title class="bg-primary text-white">Sistema de Controle de prótese</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
-  <form>
-    <ion-item>
-      <span>Usuario:</span>
-      <input class="form-control" type="text" name="user" [(ngModel)]="user">
-    </ion-item>
-    <ion-item>
-      <span>Senha:</span>
-      <input class="form-control" type="password" name="password" [(ngModel)]="password">
-    </ion-item>
-    <button class="btn btn-primary" (click)="login()">Login</button>
-  </form>
-
+  <div class="d-flex justify-content-center h-100">
+    <div class="col-6 align-self-center text-center">
+      <form>
+        <ion-item class="ion-margin">
+          <ion-label>Usuario:</ion-label>
+          <ion-input class="" type="text" name="user" [(ngModel)]="user"></ion-input>
+        </ion-item>
+        <ion-item class="ion-margin">
+          <ion-label>Senha:</ion-label>
+          <ion-input class="" type="password" name="password" [(ngModel)]="password"></ion-input>
+        </ion-item>
+        <button class="btn btn-primary" (click)="login()">Login</button>
+      </form>
+    </div>
+  </div>
 </ion-content>

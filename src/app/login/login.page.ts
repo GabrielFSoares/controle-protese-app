@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AutenticacaoService } from '../services/usuario/autenticacao.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -12,12 +11,13 @@ export class LoginPage implements OnInit {
   public user: string
   public password: string
 
-  constructor(public autenticacaoService: AutenticacaoService, public router: Router) { }
+  constructor(public autenticacaoService: AutenticacaoService) { }
 
   ngOnInit() {
   }
 
   login() {
+    this.user = this.user.toLowerCase()
     this.autenticacaoService.loginFirebase(this.user, this.password)
   }
 
