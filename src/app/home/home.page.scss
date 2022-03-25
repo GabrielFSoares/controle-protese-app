@@ -28,15 +28,22 @@ p {
     margin-right: 5px;
 }
 
-.icon2 {
-    position: relative;
-    top: 3px;
-}
-
 .modal-xl {
     width: 1000px;
 }
 
 a {
     text-decoration: none;
+}
+
+#userName {
+    position: relative;
+    top: -6px;
+    margin-right: 5px;
+}
+
+#menu {
+    position: absolute;
+    left: auto;
+    right: 0;
 }

@@ -1,20 +1,22 @@
-<ion-header class="bg-primary">
-  <div class="collapse" id="navbarToggleExternalContent">
-    <div class="bg-dark p-4">
-      <h5 class="text-white h4">Collapsed content</h5>
-      <span class="text-muted">Toggleable via the navbar brand.</span>
-    </div>
-  </div>
-  <nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<ion-content [fullscreen]="true">
+
+  <nav class="navbar navbar-light">
+    <div class="container-fluid d-flex justify-content-end">
+      <a class="text-dark" href="#" id="navbarDropdown" data-bs-toggle="dropdown">
+        <p id="userName">{{user}}</p><span class="icon"><ion-icon name="person-circle" size="large"></ion-icon></span>
+      </a>
+      <ul id="menu" class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <li><a class="dropdown-item" href="#">Alterar e-mail</a></li>
+        <li><a class="dropdown-item" href="#">Alterar senha</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="/login">
+          <span class="icon"><ion-icon name="exit-outline" size="small"></ion-icon></span>
+          <p>Sair</p>
+        </a></li>
+      </ul>
     </div>
   </nav>
-</ion-header>
 
-<ion-content [fullscreen]="true">
   <div class="h-100 row mx-1">
     <div class="col-3 text-center">
       <div>
@@ -25,16 +27,6 @@
       </div>
       <div class="">
         <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('estoque')">Estoque</button>
-      </div>
-      <div class="mt-3">
-        <div>
-          <span class="icon"><ion-icon name="person" size="small"></ion-icon></span><p>{{user}}</p>
-        </div>
-        <div class="mt-2">
-          <a href="/login" class="text-danger">
-            <span class="icon"><ion-icon name="exit-outline" size="small"></ion-icon></span><p>Sair</p>
-          </a>
-        </div>
       </div>
     </div>
     <div class="col-9">
