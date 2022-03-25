@@ -5,6 +5,7 @@ import { app } from '../firebaseConfig';
 import { getFirestore, collection, query, getDocs, where, orderBy } from "firebase/firestore";
 import { ModalController } from '@ionic/angular';
 import { ModalNoteComponent } from '../components/modal-note/modal-note.component';
+import { getAuth } from "firebase/auth";
 
 const db = getFirestore(app)
 
@@ -34,7 +35,11 @@ export class HomePage {
 
   constructor(private modalService: BsModalService, public router: Router, public modalController: ModalController) { }
 
+  public user: string
+
   ngOnInit() {
+
+    this.user = localStorage.getItem('user')
     this.movementsLoad()
 
     this.doctorList = [
@@ -163,6 +168,10 @@ export class HomePage {
     if(this.movements.length != 0) {
       this.loadNote = true 
     }
+  }
+
+  logout() {
+    this.router.navigateByUrl('/login')
   }
 
   async presentModal(i: number) {
