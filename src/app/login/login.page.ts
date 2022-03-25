@@ -14,6 +14,7 @@ export class LoginPage implements OnInit {
   constructor(public autenticacaoService: AutenticacaoService) { }
 
   ngOnInit() {
+    localStorage.removeItem('user')
   }
 
   login() {
