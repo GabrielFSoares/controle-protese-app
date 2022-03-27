@@ -15,6 +15,7 @@ interface NotaFiscal {
   dataMovimento: any
   item: any
   movimentacao: string
+  usuario: string
 }
 
 @Component({
@@ -37,12 +38,14 @@ export class SaidaPage implements OnInit {
   public notaFiscal: NotaFiscal
   public confirm: boolean
   public doctorList = []
+  public user: string
 
   constructor(public router: Router, public toastController: ToastController, public alertController: AlertController) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
     localStorage.setItem('itemSaida', '1')
+    this.user = localStorage.getItem('user')
 
     this.doctorList = [
       'Marcelo Alonso',
@@ -125,7 +128,8 @@ export class SaidaPage implements OnInit {
           dataEmissao: docSnap.data().dataEmissao,
           dataMovimento: this.outputDate,
           item: this.itens,
-          movimentacao: this.movement
+          movimentacao: this.movement,
+          usuario: this.user
         }
 
         for(let i=0; i<storage; i++) {

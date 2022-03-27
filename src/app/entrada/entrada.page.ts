@@ -16,6 +16,7 @@ interface NotaFiscal {
   dataMovimento: any
   item: any
   movimentacao: string
+  usuario: string
 }
 
 @Component({
@@ -37,12 +38,14 @@ export class EntradaPage implements OnInit {
   public confirm: boolean
   public doctorList = []
   public providerList = []
+  public user: string
 
   constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController, public alertController: AlertController) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"
     localStorage.setItem('item', '1')
+    this.user = localStorage.getItem('user')
 
     this.formNote = this.fb.group({
       noteNumber: ['', Validators.required],
@@ -147,7 +150,8 @@ export class EntradaPage implements OnInit {
               dataEmissao: this.formNote.value.issueDate,
               dataMovimento: this.entryDate,
               item: this.itens,
-              movimentacao: this.movement
+              movimentacao: this.movement,
+              usuario: this.user
             }
 
             const docRef = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)

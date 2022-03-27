@@ -40,7 +40,7 @@
       </div>
     </div>
     
-    <div class="row mb-3" *ngFor="let item of itens; let i=index">
+    <div class="row mb-4" *ngFor="let item of itens; let i=index">
       <div class="col-4">
         <input class="form-control" type="text" placeholder="Item" value="{{item.descricao}}" disabled>
       </div>
@@ -51,8 +51,14 @@
         <input class="form-control" type="number" placeholder="Volume" value="{{item.volume}}" disabled>
       </div>
     </div>
-    <div class="my-3 text-end">
-      <button type="button" class="btn btn-danger" (click)="dismiss()">Voltar</button>
+    
+    <div class="row justify-content-between">
+      <div class="col-4">
+        <p>Usuário: {{user}}</p>
+      </div>
+      <div class="col-4 text-end">
+        <button type="button" class="btn btn-danger" (click)="dismiss()">Voltar</button>        
+      </div>
     </div>
   </form>
 </div>
