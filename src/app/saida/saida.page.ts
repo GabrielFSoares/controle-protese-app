@@ -265,14 +265,6 @@ export class SaidaPage implements OnInit {
     this.router.navigateByUrl('/home')
   }
 
-  async openMessage(message: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 2000
-    });
-    toast.present();
-  }
-
   async presentAlert(message) {
     const alert = await this.alertController.create({
       cssClass: 'custom-alert',
@@ -281,9 +273,5 @@ export class SaidaPage implements OnInit {
     });
 
     await alert.present();
-  }
-
-  test() {
-    console.log(this.doctor)
   }
 }

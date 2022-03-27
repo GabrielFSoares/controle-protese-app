@@ -124,7 +124,7 @@ export class EntradaPage implements OnInit {
       }
 
       if(querySnapshot.size != 0) {
-        this.presentAlert('Nota já cadastrada')
+        this.presentAlert('Número de nota já cadastrada')
       } else if(serieExist) {
           this.presentAlert('Número de série de um ou mais produtos já exixtem no estoque')
         } else {
@@ -168,7 +168,7 @@ export class EntradaPage implements OnInit {
             this.router.navigateByUrl('/home')
           }
     } else {
-      this.openMessage('Preencha todos os campos')
+      this.presentAlert('Preencha todos os campos')
       }
   }
 
@@ -243,14 +243,6 @@ export class EntradaPage implements OnInit {
 
   cancel() {
     this.router.navigateByUrl('/home')
-  }
-
-  async openMessage(message: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 2000
-    });
-    toast.present();
   }
 
   async presentAlert(message) {
