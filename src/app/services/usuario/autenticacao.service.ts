@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { app } from '../../firebaseConfig';
 import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { AlertController } from '@ionic/angular';
 
 const db = getFirestore(app)
 const auth = getAuth();
@@ -12,7 +13,7 @@ const auth = getAuth();
 })
 export class AutenticacaoService {
 
-  constructor(public router: Router) { }
+  constructor(public router: Router, public alertController: AlertController) { }
 
   async loginFirebase(user:string, password:string) {
     let email = ''
@@ -32,10 +33,10 @@ export class AutenticacaoService {
       .catch((error) => {
         const errorCode = error.code
         const errorMessage = error.message
-        console.log('Senha incorreta')
+        this.presentAlert('Senha incorreta')
       })
     } else {
-      console.log('Usuário não existe')
+      this.presentAlert('Usuário não existe')
     }
   }
 
@@ -55,5 +56,15 @@ export class AutenticacaoService {
       const errorMessage = error.message;
       console.log(errorCode, errorMessage)
     })
+  }
+
+  async presentAlert(message) {
+    const alert = await this.alertController.create({
+      cssClass: 'custom-alert',
+      message: message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 }

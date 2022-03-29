@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
 import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastController, AlertController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 
 const db = getFirestore(app)
 
@@ -40,7 +40,7 @@ export class EntradaPage implements OnInit {
   public providerList = []
   public user: string
 
-  constructor(public router: Router, private fb: FormBuilder, public toastController: ToastController, public alertController: AlertController) { }
+  constructor(public router: Router, private fb: FormBuilder, public alertController: AlertController) { }
 
   ngOnInit() {
     this.product = "PRÓTESE DE MAMA"

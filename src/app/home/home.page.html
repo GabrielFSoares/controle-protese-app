@@ -6,8 +6,8 @@
         <p id="userName">{{user}}</p><span class="icon"><ion-icon name="person-circle" size="large"></ion-icon></span>
       </a>
       <ul id="menu" class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <li><a class="dropdown-item" href="#">Alterar e-mail</a></li>
-        <li><a class="dropdown-item" href="#">Alterar senha</a></li>
+        <li><a class="dropdown-item">Alterar e-mail</a></li>
+        <li><a class="dropdown-item" (click)="open(modalPassword)">Alterar senha</a></li>
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item text-danger" href="/login">
           <span class="icon"><ion-icon name="exit-outline" size="small"></ion-icon></span>
@@ -130,3 +130,34 @@
     </table>
   </div>
 </ion-content>
+
+<ng-template #modalPassword let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title">Alterar Senha</h4>
+      <ion-button type="button" color="white" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span class="text-dark" aria-hidden="true">&times;</span>
+      </ion-button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <ion-item>
+          <ion-label>Senha atual: </ion-label>
+          <ion-input [(ngModel)]="password" type="password"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Nova senha: </ion-label>
+          <ion-input [(ngModel)]="newPassword" type="password"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Confirmar senha: </ion-label>
+          <ion-input [(ngModel)]="confirmPassword" type="password"></ion-input>
+        </ion-item>
+      </form>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-success" (click)="upPassword()">Alterar</button>
+    </div>
+  </ng-template>

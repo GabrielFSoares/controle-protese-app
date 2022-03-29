@@ -1,11 +1,13 @@
 import { Component, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { app } from '../firebaseConfig';
 import { getFirestore, collection, query, getDocs, where, orderBy } from "firebase/firestore";
 import { ModalController } from '@ionic/angular';
 import { ModalNoteComponent } from '../components/modal-note/modal-note.component';
-import { getAuth } from "firebase/auth";
+import { getAuth, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastController } from '@ionic/angular';
+
 
 const db = getFirestore(app)
 
@@ -16,7 +18,6 @@ const db = getFirestore(app)
 })
 export class HomePage {
 
-  public modalRef: BsModalRef
   public noteNumber: number
   public patient: string
   public doctor: string
@@ -32,8 +33,16 @@ export class HomePage {
   public providerList = []
   public loadNote = false
   public filterSerie = false
+  public password: string
+  public confirmPassword: string
+  public newPassword: string
 
-  constructor(private modalService: BsModalService, public router: Router, public modalController: ModalController) { }
+  constructor( 
+    public router: Router, 
+    public modalController: ModalController, 
+    private modalService: NgbModal,
+    public toastController: ToastController
+  ) { }
 
   public user: string
 
@@ -174,6 +183,10 @@ export class HomePage {
     this.router.navigateByUrl('/login')
   }
 
+  open(content) {
+    this.modalService.open(content, { centered: true });
+  }
+
   async presentModal(i: number) {
     const modal = await this.modalController.create({
       component: ModalNoteComponent,
@@ -183,5 +196,38 @@ export class HomePage {
       }
     });
     return await modal.present();
+  }
+
+  async openMessage(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
+  }
+
+  upPassword() {
+    const auth = getAuth()
+    const user = auth.currentUser
+    const credential = EmailAuthProvider.credential(user.email, this.password)
+
+    reauthenticateWithCredential(user, credential).then(() => {
+      console.log('Usuário reautenticado')
+      if(this.newPassword === this.confirmPassword) {
+        updatePassword(user, this.newPassword)
+        this.password = ""
+        this.newPassword = ""
+        this.confirmPassword = ""
+        this.openMessage('Alteração realizada com sucesso!')
+      } else {
+        this.openMessage('Senhas não coincidem')
+      }
+
+    }).catch((error) => {
+      this.openMessage('Senha incorreta! Tente novamente')
+      //this.password = ""
+      //throw 'Senha incorreta'
+    })
+
   }
 }
