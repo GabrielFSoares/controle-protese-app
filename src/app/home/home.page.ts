@@ -1,10 +1,10 @@
 import { Component, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../firebaseConfig';
-import { getFirestore, collection, query, getDocs, where, orderBy } from "firebase/firestore";
+import { getFirestore, collection, query, getDocs, where, orderBy, updateDoc, doc } from "firebase/firestore";
 import { ModalController } from '@ionic/angular';
 import { ModalNoteComponent } from '../components/modal-note/modal-note.component';
-import { getAuth, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { getAuth, updatePassword, EmailAuthProvider, reauthenticateWithCredential, updateEmail } from "firebase/auth";
 import { NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastController } from '@ionic/angular';
 
@@ -36,6 +36,8 @@ export class HomePage {
   public password: string
   public confirmPassword: string
   public newPassword: string
+  public email: string
+  public newEmail: string
 
   constructor( 
     public router: Router, 
@@ -184,7 +186,11 @@ export class HomePage {
   }
 
   open(content) {
-    this.modalService.open(content, { centered: true });
+    this.modalService.open(content, { centered: true })
+
+    const auth = getAuth()
+    const user = auth.currentUser
+    this.email = user.email
   }
 
   async presentModal(i: number) {
@@ -206,28 +212,52 @@ export class HomePage {
     toast.present();
   }
 
-  upPassword() {
+  update(i:string) {
     const auth = getAuth()
     const user = auth.currentUser
     const credential = EmailAuthProvider.credential(user.email, this.password)
 
     reauthenticateWithCredential(user, credential).then(() => {
       console.log('Usuário reautenticado')
-      if(this.newPassword === this.confirmPassword) {
-        updatePassword(user, this.newPassword)
-        this.password = ""
-        this.newPassword = ""
-        this.confirmPassword = ""
-        this.openMessage('Alteração realizada com sucesso!')
-      } else {
-        this.openMessage('Senhas não coincidem')
+
+      if(i == 'email' && this.newEmail != undefined && this.newEmail != '') {
+        updateEmail(user, this.newEmail).then(() => {
+          const userRef = doc(db, "Usuarios", user.uid)
+
+          updateDoc(userRef, {
+            email: this.newEmail
+          })
+          
+          this.modalService.dismissAll()
+          this.newEmail = ""
+          this.password = ""
+          this.openMessage('Alteração realizada com sucesso!')
+        }).catch((error) => {
+          console.log(error)
+          this.openMessage('Erro ao alterar email.')
+        })
       }
 
+      if(i == 'password') {
+        if(this.newPassword === this.confirmPassword) {
+          updatePassword(user, this.newPassword).then(() => {
+          this.password = ""
+          this.newPassword = ""
+          this.confirmPassword = ""
+          this.modalService.dismissAll()
+          this.openMessage('Alteração realizada com sucesso!')
+        }).catch((erro) => {
+          console.log(erro)
+          this.openMessage('Erro ao alterar senha')
+        })
+        } else {
+          this.openMessage('Senhas não coincidem')
+        }
+      }
     }).catch((error) => {
-      this.openMessage('Senha incorreta! Tente novamente')
-      //this.password = ""
-      //throw 'Senha incorreta'
-    })
-
+        this.openMessage('Senha incorreta! Tente novamente')
+        //this.password = ""
+        //throw 'Senha incorreta'
+      })    
   }
 }

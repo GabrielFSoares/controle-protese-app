@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { app } from '../../firebaseConfig';
-import { getFirestore, collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { AlertController } from '@ionic/angular';
 
@@ -44,7 +44,7 @@ export class AutenticacaoService {
     createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
       login = login.toLowerCase()
-      const docRef = await addDoc(collection(db, 'Usuarios'), {
+      const docRef = await setDoc(doc(db, 'Usuarios', auth.currentUser.uid), {
         usuario: login,
         email: email,
         id: auth.currentUser.uid
