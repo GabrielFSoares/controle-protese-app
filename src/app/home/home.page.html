@@ -8,6 +8,7 @@
       <ul id="menu" class="dropdown-menu" aria-labelledby="navbarDropdown">
         <li><a class="dropdown-item" (click)="open(modalEmail)">Alterar e-mail</a></li>
         <li><a class="dropdown-item" (click)="open(modalPassword)">Alterar senha</a></li>
+        <li *ngIf="admin"><a class="dropdown-item" [routerLink]="['/cadastrar']">Criar Usuário</a></li>
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item text-danger" href="/login">
           <span class="icon"><ion-icon name="exit-outline" size="small"></ion-icon></span>
@@ -26,7 +27,7 @@
         <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('saida')">Nova saída</button>
       </div>
       <div class="">
-        <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('estoque')">Estoque</button>
+        <button class="btn btn-primary btn-lg m-2 w-100 d-none" (click)="navigate('estoque')">Estoque</button>
       </div>
     </div>
     <div class="col-9">

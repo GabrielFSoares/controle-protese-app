@@ -38,6 +38,7 @@ export class HomePage {
   public newPassword: string
   public email: string
   public newEmail: string
+  public admin: boolean
 
   constructor( 
     public router: Router, 
@@ -49,9 +50,9 @@ export class HomePage {
   public user: string
 
   ngOnInit() {
-
     this.user = localStorage.getItem('user')
     this.movementsLoad()
+    this.verifyAdmin()
 
     this.doctorList = [
       'Marcelo Alonso',
@@ -82,6 +83,8 @@ export class HomePage {
       'Ruben Bartz',
       'Bruno Anastácio'
     ]
+
+    this.doctorList.sort()
 
     this.providerList = ['SILIMED', 'POLYTECH', 'MOTIVA', 'MENTOR']
   }
@@ -181,10 +184,6 @@ export class HomePage {
     }
   }
 
-  logout() {
-    this.router.navigateByUrl('/login')
-  }
-
   open(content) {
     this.modalService.open(content, { centered: true })
 
@@ -259,5 +258,16 @@ export class HomePage {
         //this.password = ""
         //throw 'Senha incorreta'
       })    
+  }
+
+  async verifyAdmin() {
+    const q = query(collection(db, "Usuarios"), where("usuario", "==", this.user))
+    const querySnapshot = await getDocs(q)  
+
+    querySnapshot.forEach((doc) => {
+      if(doc.data().admin) {
+        this.admin = true
+      }
+    })
   }
 }
