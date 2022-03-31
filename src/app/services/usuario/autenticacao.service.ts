@@ -6,7 +6,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 import { AlertController } from '@ionic/angular';
 
 const db = getFirestore(app)
-const auth = getAuth();
+const auth = getAuth()
 
 @Injectable({
   providedIn: 'root'
@@ -40,22 +40,37 @@ export class AutenticacaoService {
     }
   }
 
-  createUser(email:string, password:string, login:string) {
-    createUserWithEmailAndPassword(auth, email, password)
-    .then(async (userCredential) => {
-      login = login.toLowerCase()
-      const docRef = await setDoc(doc(db, 'Usuarios', auth.currentUser.uid), {
-        usuario: login,
-        email: email,
-        id: auth.currentUser.uid
+  async createUser(email:string, password:string, login:string) {
+    const q = query(collection(db, "Usuarios"), where("usuario", "==", login))
+    const querySnapshot = await getDocs(q)  
+
+    if(querySnapshot.docChanges().length == 0) {
+      createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        login = login.toLowerCase()
+        const docRef = await setDoc(doc(db, 'Usuarios', auth.currentUser.uid), {
+          usuario: login,
+          email: email,
+          id: auth.currentUser.uid
+        })
+        this.presentAlert('Usuário criado com sucesso!')
       })
-      console.log('Sucesso!')
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode, errorMessage)
-    })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode)
+
+        if(errorCode == 'auth/invalid-email') {
+          this.presentAlert('E-mail inválido')
+        }
+        
+        if(errorCode == 'auth/email-already-in-use') {
+          this.presentAlert('E-mail já está em uso')
+        }
+      })
+    } else {
+      this.presentAlert('Usuário já existe')
+    }
   }
 
   async presentAlert(message) {
@@ -65,6 +80,6 @@ export class AutenticacaoService {
       buttons: ['OK']
     });
 
-    await alert.present();
+    await alert.present()
   }
 }
