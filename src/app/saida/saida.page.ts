@@ -86,6 +86,7 @@ export class SaidaPage implements OnInit {
 
     this.outputDate = year + '-' + month + '-' + day
     this.movement = "Saída"
+    this.itens = []
   
     let storage = parseInt(localStorage.getItem('itemSaida')) 
 
@@ -105,7 +106,7 @@ export class SaidaPage implements OnInit {
       for(let j=0, i=1; i<=storage; i++, j++) {
         let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
         let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
-  
+        console.log('rodou')
         this.itens[j] = {
           'descricao': this.product,
           'serie': serie,
@@ -116,6 +117,8 @@ export class SaidaPage implements OnInit {
       if(this.idNota !== null) {
         const docRef= doc(db, "NotaFiscal", this.idNota)
         const docSnap = await getDoc(docRef)
+
+        console.log(docSnap)
 
         let docId = []
         let compare = 0
@@ -144,7 +147,7 @@ export class SaidaPage implements OnInit {
             })
           }
         }
-
+        console.log(compare, storage)
         if(compare == storage) {
           const docRef2 = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
 
@@ -165,7 +168,7 @@ export class SaidaPage implements OnInit {
     }
   }
 
-  addItem() {
+  addItem() {    
     let id = parseInt(localStorage.getItem('itemSaida')) + 1
     localStorage.setItem('itemSaida', id.toString())
 
@@ -242,7 +245,7 @@ export class SaidaPage implements OnInit {
     const q = query(collection(db, "Estoque"), where("serie", "==", this.serie))
     const querySnapshot = await getDocs(q)  
     console.log(querySnapshot.docChanges())
-    this.idNota = null
+    //this.idNota = null
 
     querySnapshot.forEach((doc) => {
       this.idNota = doc.data().idNota;
