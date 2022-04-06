@@ -1,9 +1,49 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>estoque</ion-title>
+  <ion-toolbar color="primary">
+    <a [routerLink]="['/home']" class="text-white" id="return"><ion-icon size="large" name="arrow-back-outline"></ion-icon></a>
+    <ion-title class="text-white text-center">Estoque</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div class="container mt-5">
+    <form>
+      <p>Filtros:</p>
+      <div class="row my-2">
+        <div class="col-5">
+          <select id="product" class="form-select">
+            <option selected>PRÓTESE DE MAMA</option>
+          </select>
+        </div>
+        <div class="col-5">
+          <input class="form-control" [(ngModel)]="serie" type="number" placeholder="Número de serie"/>
+        </div>
+        <div class="col-2 text-end">
+          <ion-icon name="search" size="large" (click)="itensLoad()"></ion-icon>
+        </div>
+      </div>
+    </form>
+  </div>
 
+  <table class="table mt-5">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Descrição</th>
+          <th scope="col">N° de serie</th>
+          <th scope="col">Volume</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="!loadNote">
+          <td colspan="8" class="text-center">Nenhum resultado encontrado</td>
+        </tr>
+        <tr *ngFor="let item of itens; let i=index">
+          <td></td>
+          <td>PRÓTESE DE MAMA</td>
+          <td>{{item.serie}}</td>
+          <td>{{item.volume}}</td>
+        </tr>
+      </tbody>
+    </table>
 </ion-content>
