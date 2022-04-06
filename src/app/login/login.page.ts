@@ -19,7 +19,7 @@ export class LoginPage implements OnInit {
 
   login() {
     if(this.user != '' && this.user != undefined && this.password != '' && this.password != undefined) {
-      this.user = this.user.toLowerCase()
+      this.user = this.user.toLowerCase().split(" ").join("")
       this.autenticacaoService.loginFirebase(this.user, this.password)
     } else {
       console.log('Preencha os campos')
