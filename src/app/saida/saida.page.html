@@ -1,23 +1,30 @@
 <ion-header class="bg-primary text-center text-white py-3 position-fixed">
-    <ion-title>Nova Saída</ion-title>
+    <ion-title>{{title}}</ion-title>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <br><br>
+  <div>
+    
+  </div>
   <div class="container mt-5">
-    <form>      
+    <form id="exitForm">      
       <p>Itens:</p>
       <div id="itensOut">
         <div id="1">
           <select id="product" class="form-select">
             <option selected>{{product}}</option>
           </select>
-          <div class="row my-2">
+          <div class="row my-3">
             <div class="col-4">
-              <input id="serie1" (keyup)="loadInfo(1)" class="form-control" name="serie" type="number" placeholder="Número de série">
+              <ion-item>
+                <ion-input id="serie1" (keyup)="loadInfo(1)" type="number" name="serie" placeholder="Número de serie"></ion-input>
+              </ion-item>
             </div>
             <div class="col-4">
-              <input id="volume1" class="form-control" type="number" name="volume" placeholder="Volume">
+              <ion-item>
+                <ion-input id="volume1" type="number" name="volume" placeholder="Volume"></ion-input>
+              </ion-item>
             </div>
             <div id="icon" class="col-4 text-end">
               <ion-icon id="add" name="add-circle" size="large" (click)="addItem()"></ion-icon>
@@ -27,15 +34,18 @@
       </div>
       <div class="row my-2">
         <div class="col-6">
-          <p>Paciente: </p>
-          <input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+          <p>Paciente:</p>
+          <ion-item>
+            <ion-input type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente"></ion-input>
+          </ion-item>
         </div>
         <div class="col-6">
-          <p>Médico: </p>
-          <select [(ngModel)]="doctor" class="form-select">
-            <option value="" selected>Selecione um Médico</option>
-            <option *ngFor="let doctor of doctorList">{{doctor}}</option>
-          </select>
+          <p>Médico:</p>
+          <ion-item>
+            <ion-select [(ngModel)]="doctor" placeholder="Selecione">
+              <ion-select-option *ngFor="let doctor of doctorList">{{doctor}}</ion-select-option>
+            </ion-select>
+          </ion-item>
         </div>
       </div>
       <div class="my-3 text-end">

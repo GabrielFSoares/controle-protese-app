@@ -26,7 +26,10 @@
       <div>
         <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('saida')">Nova saída</button>
       </div>
-      <div class="">
+      <div>
+        <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('consumo')">Consumo</button>
+      </div>
+      <div>
         <button class="btn btn-primary btn-lg m-2 w-100" (click)="navigate('estoque')">Estoque</button>
       </div>
     </div>
@@ -36,54 +39,63 @@
 
         <form class="mt-4">
           <div class="row">
-            <div class="col-3">
-              <p>N° da nota: </p>
-              <input class="form-control" type="number" [(ngModel)]="noteNumber" name="note">
-            </div>
             <div class="col-4">
+              <p>N° da nota: </p>
+              <ion-item>
+                <ion-input type="number" name="note" [(ngModel)]="noteNumber" placeholder="Número da nota"></ion-input>
+              </ion-item>
+            </div>
+            <div class="col-3">
               <p>Fornecedor: </p>
-              <select [(ngModel)]="provider" name="provider" class="form-select">
-                <option value="">Selecione um fornecedor</option>
-                <option *ngFor="let provider of providerList">{{provider}}</option>
-              </select>
+              <ion-select [(ngModel)]="provider" name="provider" placeholder="Selecione">
+                <ion-select-option *ngFor="let provider of providerList">{{provider}}</ion-select-option>
+              </ion-select>
             </div>
             <div class="col-5">
               <p>Data Emissão: </p>
-              <input class="form-control" type="date" name="issueDate" [(ngModel)]="issueDate">
+              <ion-item>
+                <ion-input type="date" name="issueDate" [(ngModel)]="issueDate"></ion-input>
+              </ion-item>
             </div>
           </div>
           <div class="row mt-2">
             <div class="col-4">
               <p>Paciente: </p>
-              <input class="form-control" type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente">
+              <ion-item>
+                <ion-input type="text" name="patient" [(ngModel)]="patient" placeholder="Nome do paciente"></ion-input>
+              </ion-item>
             </div>
             <div class="col-5">
               <p>Médico: </p>
-              <select [(ngModel)]="doctor" name="doctor" class="form-select">
-                <option value="">Selecione um médico</option>
-                <option *ngFor="let doctor of doctorList">{{doctor}}</option>
-              </select>
+              <ion-select [(ngModel)]="doctor" name="doctor" placeholder="Selecione">
+                <ion-select-option *ngFor="let doctor of doctorList">{{doctor}}</ion-select-option>
+              </ion-select>
             </div>
             <div class="col-3">
               <p>Movimento: </p>
-              <select [(ngModel)]="movement" name="movement" class="form-select">
-                <option value=""></option>
-                <option>Entrada</option>
-                <option>Saída</option>
-              </select>
+              <ion-select [(ngModel)]="movement" name="movement" placeholder="Selecione">
+                <ion-select-option>Entrada</ion-select-option>
+                <ion-select-option>Saída</ion-select-option>
+                <ion-select-option>Consumo</ion-select-option>
+              </ion-select>
             </div>
           </div>
           <div class="row mt-2">
-            <div class="col-5">
+            <div class="col-4">
               <p>Série: </p>
-              <input class="form-control" type="number" name="serie" [(ngModel)]="serie" placeholder="Série do produto">
+              <ion-item>
+                <ion-input type="number" name="serie" [(ngModel)]="serie" placeholder="Número de série"></ion-input>
+              </ion-item>
             </div>
             <div class="col-5">
               <p>Data do movimento: </p>
-              <input class="form-control" type="date" name="date" [(ngModel)]="date">
+              <ion-item>
+                <ion-input type="date" name="date" [(ngModel)]="date"></ion-input>
+              </ion-item>
             </div>
-            <div class="col-2 align-self-end text-end">
-              <a (click)="movementsLoad()"><ion-icon name="search" size="large"></ion-icon></a>
+            <div class="col-3 align-self-end text-end">
+              <button class="btn btn-outline-danger btn-sm mb-1" (click)="clean()">Limpar</button>
+              <a (click)="movementsLoad()"><ion-icon class="iconSearch" name="search" size="large"></ion-icon></a>
             </div>
           </div>
         </form>

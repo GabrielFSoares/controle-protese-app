@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { app } from '../firebaseConfig';
 import { getFirestore, collection, addDoc, query, where, getDocs, getDoc, doc, deleteDoc } from "firebase/firestore"
 import { ToastController, AlertController } from '@ionic/angular';
@@ -39,10 +39,25 @@ export class SaidaPage implements OnInit {
   public confirm: boolean
   public doctorList = []
   public user: string
+  public option: string
+  public title: string
 
-  constructor(public router: Router, public toastController: ToastController, public alertController: AlertController) { }
+  constructor(
+    public router: Router, 
+    public toastController: ToastController, 
+    public alertController: AlertController, 
+    public route:ActivatedRoute
+    ) {
+    this.route.params.subscribe(params => this.option = params['id'])
+  }
 
   ngOnInit() {
+    if(this.option == "saida") {
+      this.title = "Nova Saída"
+    } else if(this.option == "consumo") {
+      this.title = "Consumo"
+    }
+    
     this.product = "PRÓTESE DE MAMA"
     localStorage.setItem('itemSaida', '1')
     this.user = localStorage.getItem('user')
@@ -76,6 +91,8 @@ export class SaidaPage implements OnInit {
       'Ruben Bartz',
       'Bruno Anastácio'
     ]
+
+    this.doctorList.sort()
   }
 
   async noteOutput() {
@@ -106,7 +123,7 @@ export class SaidaPage implements OnInit {
       for(let j=0, i=1; i<=storage; i++, j++) {
         let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
         let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
-        console.log('rodou')
+
         this.itens[j] = {
           'descricao': this.product,
           'serie': serie,
@@ -117,7 +134,7 @@ export class SaidaPage implements OnInit {
       if(this.idNota !== null) {
         const docRef= doc(db, "NotaFiscal", this.idNota)
         const docSnap = await getDoc(docRef)
-
+ 
         console.log(docSnap)
 
         let docId = []
@@ -190,16 +207,17 @@ export class SaidaPage implements OnInit {
     select.appendChild(option)
 
     let divRow = document.createElement('div')
-    divRow.className = "row my-2"
+    divRow.className = "row my-3"
 
     div.appendChild(divRow)
 
     let divCol1 = document.createElement('div')
     divCol1.className = 'col-4'
 
-    let inputCol1 = document.createElement('input')
-    inputCol1.className = 'form-control'
-    inputCol1.placeholder = 'Número de série'
+    let ionItem1 = document.createElement('ion-item')
+
+    let inputCol1 = document.createElement('ion-input')
+    inputCol1.placeholder = 'Número de serie'
     inputCol1.type = 'number'
     inputCol1.id = 'serie'+id.toString()
     inputCol1.addEventListener("keyup", () => {
@@ -207,19 +225,22 @@ export class SaidaPage implements OnInit {
     })
 
     divRow.appendChild(divCol1)
-    divCol1.appendChild(inputCol1)
+    divCol1.appendChild(ionItem1)
+    ionItem1.appendChild(inputCol1)
 
     let divCol2 = document.createElement('div')
     divCol2.className = 'col-4'
 
-    let inputCol2 = document.createElement('input')
-    inputCol2.className = 'form-control'
+    let ionItem2 = document.createElement('ion-item')
+
+    let inputCol2 = document.createElement('ion-input')
     inputCol2.placeholder = 'Volume'
     inputCol2.type = 'number'
     inputCol2.id = 'volume'+id.toString()
 
     divRow.appendChild(divCol2)
-    divCol2.appendChild(inputCol2)
+    divCol2.appendChild(ionItem2)
+    ionItem2.appendChild(inputCol2)
 
     let divCol3 = document.createElement('div')
     divCol3.className = 'col-4 text-end'

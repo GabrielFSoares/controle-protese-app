@@ -9,31 +9,39 @@
       <div class="row">
         <div class="col-3">
           <p>N° da nota: </p>
-          <input class="form-control" formControlName="noteNumber" type="number"  name="note"/>
+          <ion-item>
+            <ion-input formControlName="noteNumber" type="number" name="note" placeholder="Número da nota"></ion-input>
+          </ion-item>
         </div>
         <div class="col-4">
           <p>Fornecedor: </p>
-          <select formControlName="provider" class="form-select">
-            <option value="">Selecione</option>
-            <option *ngFor="let provider of providerList">{{provider}}</option>
-          </select>
+          <ion-item>
+            <ion-select formControlName="provider" placeholder="Selecione">
+              <ion-select-option *ngFor="let provider of providerList">{{provider}}</ion-select-option>
+            </ion-select>
+          </ion-item>
         </div>
         <div class="col-5">
           <p>Data de emissão: </p>
-          <input class="form-control" formControlName="issueDate" type="date" name="date"/>
+          <ion-item>
+            <ion-input formControlName="issueDate" type="date" name="date"></ion-input>
+          </ion-item>
         </div>
       </div>
-      <div class="row my-2">
+      <div class="row my-3">
         <div class="col-6">
           <p>Paciente: </p>
-          <input class="form-control" formControlName="patient" type="text" name="patient" placeholder="Nome do paciente"/>
+          <ion-item>
+            <ion-input formControlName="patient" type="text" name="patient" placeholder="Nome do paciente"></ion-input>
+          </ion-item>
         </div>
         <div class="col-6">
           <p>Médico: </p>
-          <select formControlName="doctor" class="form-select">
-            <option value="">Selecione um Médico</option>
-            <option *ngFor="let doctor of doctorList">{{doctor}}</option>
-          </select>
+          <ion-item>
+            <ion-select formControlName="doctor" placeholder="Selecione">
+              <ion-select-option *ngFor="let doctor of doctorList">{{doctor}}</ion-select-option>
+            </ion-select>
+          </ion-item>
         </div>
       </div>
       <p>Itens:</p>
@@ -42,12 +50,16 @@
           <select id="product" class="form-select">
             <option selected>{{product}}</option>
           </select>
-          <div class="row my-2">
+          <div class="row my-3">
             <div class="col-4">
-              <input id="serie1" class="form-control" type="number" placeholder="Número de série"/>
+              <ion-item>
+                <ion-input id="serie1" type="number" placeholder="Número de série"></ion-input>
+              </ion-item>
             </div>
             <div class="col-4">
-              <input id="volume1" class="form-control" type="number" placeholder="Volume"/>
+              <ion-item>
+                <ion-input id="volume1" type="number" placeholder="Volume"></ion-input>
+              </ion-item>
             </div>
             <div id="icon" class="col-4 text-end">
               <ion-icon id="add" name="add-circle" size="large" (click)="addItem()"></ion-icon>

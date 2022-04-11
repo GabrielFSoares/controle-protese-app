@@ -85,6 +85,8 @@ export class EntradaPage implements OnInit {
       'Bruno Anastácio'
     ]
 
+    this.doctorList.sort()
+
     this.providerList = ['SILIMED', 'POLYTECH', 'MOTIVA', 'MENTOR']
   }
 
@@ -194,33 +196,37 @@ export class EntradaPage implements OnInit {
     select.appendChild(option)
 
     let divRow = document.createElement('div')
-    divRow.className = "row my-2"
+    divRow.className = "row my-3"
 
     div.appendChild(divRow)
 
     let divCol1 = document.createElement('div')
     divCol1.className = 'col-4'
 
-    let inputCol1 = document.createElement('input')
-    inputCol1.className = 'form-control'
+    let ionItem1 = document.createElement('ion-item')
+
+    let inputCol1 = document.createElement('ion-input')
     inputCol1.placeholder = 'Número de série'
     inputCol1.type = 'number'
     inputCol1.id = 'serie'+id.toString()
 
     divRow.appendChild(divCol1)
-    divCol1.appendChild(inputCol1)
+    divCol1.appendChild(ionItem1)
+    ionItem1.appendChild(inputCol1)
 
     let divCol2 = document.createElement('div')
     divCol2.className = 'col-4'
 
-    let inputCol2 = document.createElement('input')
-    inputCol2.className = 'form-control'
+    let ionItem2 = document.createElement('ion-item')
+
+    let inputCol2 = document.createElement('ion-input')
     inputCol2.placeholder = 'Volume'
     inputCol2.type = 'number'
     inputCol2.id = 'volume'+id.toString()
 
     divRow.appendChild(divCol2)
-    divCol2.appendChild(inputCol2)
+    divCol2.appendChild(ionItem2)
+    ionItem2.appendChild(inputCol2)
 
     let divCol3 = document.createElement('div')
     divCol3.className = 'col-4 text-end'
