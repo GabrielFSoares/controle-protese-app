@@ -90,7 +90,11 @@ export class HomePage {
   }
 
   navigate(route:string) {
-    this.router.navigateByUrl(`/${route}`)
+    if(route == 'saida' || route == 'consumo') {
+      this.router.navigate(['/saida', route])
+    } else {
+      this.router.navigateByUrl(`/${route}`)
+    }
   }
 
   async movementsLoad() {
@@ -258,6 +262,17 @@ export class HomePage {
         //this.password = ""
         //throw 'Senha incorreta'
       })    
+  }
+
+  clean() {
+    this.noteNumber = null
+    this.provider = undefined
+    this.issueDate = null
+    this.patient = undefined
+    this.doctor = undefined
+    this.movement = undefined
+    this.serie = null
+    this.date = null
   }
 
   async verifyAdmin() {

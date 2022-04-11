@@ -16,13 +16,14 @@ const routes: Routes = [
     loadChildren: () => import('./entrada/entrada.module').then( m => m.EntradaPageModule)
   },
   {
-    path: 'saida',
+    path: 'saida/:id',
     loadChildren: () => import('./saida/saida.module').then( m => m.SaidaPageModule)
   },
   {
     path: 'login',
     loadChildren: () => import('./login//login.module').then( m => m.LoginPageModule)
-  },  {
+  },
+  {
     path: 'cadastrar',
     loadChildren: () => import('./cadastrar/cadastrar.module').then( m => m.CadastrarPageModule)
   },
