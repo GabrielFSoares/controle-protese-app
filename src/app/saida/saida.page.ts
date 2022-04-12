@@ -102,7 +102,6 @@ export class SaidaPage implements OnInit {
     let year = date.getFullYear()
 
     this.outputDate = year + '-' + month + '-' + day
-    this.movement = "Saída"
     this.itens = []
   
     let storage = parseInt(localStorage.getItem('itemSaida')) 
@@ -117,6 +116,12 @@ export class SaidaPage implements OnInit {
 
     if(this.patient == '' || this.doctor == '') {
       this.confirm = false 
+    }
+
+    if(this.title == 'saida') {
+      this.movement = 'Saída'
+    } else if(this.title == 'consumo') {
+      this.movement = 'Consumo'
     }
  
     if(this.confirm) {
