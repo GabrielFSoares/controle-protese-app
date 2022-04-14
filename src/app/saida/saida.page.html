@@ -4,13 +4,10 @@
 
 <ion-content [fullscreen]="true">
   <br><br>
-  <div>
-    
-  </div>
   <div class="container mt-5">
-    <form>      
+    <form id="formConsu" class="d-none">      
       <p>Itens:</p>
-      <div id="itensOut">
+      <div id="itensConsu">
         <div id="1">
           <select id="product" class="form-select">
             <option selected>{{product}}</option>
@@ -53,5 +50,45 @@
         <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
       </div>
     </form>
+
+    <!-- ********************************************** -->
+
+    <form id="formOut" class="d-none">      
+      <div class="row my-2">
+        <div class="col-6">
+          <p>Nota:</p>
+          <ion-item>
+            <ion-input id="note" type="number" name="noteNumber" (keyup)="loadInfo(null)" [(ngModel)]="noteNumber" placeholder="Número da nota"></ion-input>
+          </ion-item>
+        </div>
+      </div>
+
+      <p>Itens:</p>
+      <div id="itensOut">
+        <div id="1">
+          <select id="product2" class="form-select">
+            <option selected>{{product}}</option>
+          </select>
+          <div class="row my-3">
+            <div class="col-4">
+              <ion-item>
+                <ion-input id="serie21" type="number" name="serie" placeholder="Número de serie" disabled></ion-input>
+              </ion-item>
+            </div>
+            <div class="col-4">
+              <ion-item>
+                <ion-input id="volume21" type="number" name="volume" placeholder="Volume" disabled></ion-input>
+              </ion-item>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="my-3 text-end">
+        <button type="button" class="btn btn-primary me-2" (click)="noteOutput()">Confirmar</button>
+        <button type="button" class="btn btn-danger" (click)="cancel()">Cancelar</button>
+      </div>
+    </form>
+
   </div>
 </ion-content>

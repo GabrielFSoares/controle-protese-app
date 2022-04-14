@@ -31,7 +31,7 @@ export class SaidaPage implements OnInit {
   public doctor: string
   public idNota: string
   public conf: boolean
-  public itens = {}
+  public itens
   public movement: string
   public outputDate: any
   public docId: string
@@ -41,6 +41,7 @@ export class SaidaPage implements OnInit {
   public user: string
   public option: string
   public title: string
+  public noteNumber: number
 
   constructor(
     public router: Router, 
@@ -54,8 +55,10 @@ export class SaidaPage implements OnInit {
   ngOnInit() {
     if(this.option == "saida") {
       this.title = "Nova Saída"
+      document.getElementById('formOut').className = 'd-block'
     } else if(this.option == "consumo") {
       this.title = "Consumo"
+      document.getElementById('formConsu').className = 'd-block'
     }
     
     this.product = "PRÓTESE DE MAMA"
@@ -118,9 +121,9 @@ export class SaidaPage implements OnInit {
       this.confirm = false 
     }
 
-    if(this.title == 'saida') {
+    if(this.option == 'saida') {
       this.movement = 'Saída'
-    } else if(this.title == 'consumo') {
+    } else if(this.option == 'consumo') {
       this.movement = 'Consumo'
     }
  
@@ -194,7 +197,10 @@ export class SaidaPage implements OnInit {
     let id = parseInt(localStorage.getItem('itemSaida')) + 1
     localStorage.setItem('itemSaida', id.toString())
 
-    let divMom = document.getElementById('itensOut')
+    let divMom
+
+    if(this.option == 'saida') divMom= document.getElementById('itensOut')
+    if(this.option == 'consumo') divMom = document.getElementById('itensConsu')
 
     let div = document.createElement('div')
     div.id = id.toString()
@@ -224,6 +230,7 @@ export class SaidaPage implements OnInit {
     let inputCol1 = document.createElement('ion-input')
     inputCol1.placeholder = 'Número de serie'
     inputCol1.type = 'number'
+    if(this.option == 'saida') inputCol1.setAttribute('disabled', '')
     inputCol1.id = 'serie'+id.toString()
     inputCol1.addEventListener("keyup", () => {
       this.loadInfo(id)
@@ -241,6 +248,7 @@ export class SaidaPage implements OnInit {
     let inputCol2 = document.createElement('ion-input')
     inputCol2.placeholder = 'Volume'
     inputCol2.type = 'number'
+    if(this.option == 'saida') inputCol2.setAttribute('disabled', '')
     inputCol2.id = 'volume'+id.toString()
 
     divRow.appendChild(divCol2)
@@ -267,31 +275,101 @@ export class SaidaPage implements OnInit {
   }
 
   async loadInfo(id) {
-    this.serie = (<HTMLSelectElement>document.getElementById('serie'+id.toString())).value
-    const q = query(collection(db, "Estoque"), where("serie", "==", this.serie))
-    const querySnapshot = await getDocs(q)  
-    console.log(querySnapshot.docChanges())
-    //this.idNota = null
+    if(this.option == 'consumo') {
+      this.serie = (<HTMLSelectElement>document.getElementById('serie'+id.toString())).value
+      const q = query(collection(db, "Estoque"), where("serie", "==", this.serie))
+      const querySnapshot = await getDocs(q)  
+      console.log(querySnapshot.docChanges())
+      //this.idNota = null
 
-    querySnapshot.forEach((doc) => {
-      this.idNota = doc.data().idNota;
-      (<HTMLSelectElement>document.getElementById('volume'+id.toString())).value = doc.data().volume
-      this.conf = true
-    })
+      querySnapshot.forEach((doc) => {
+        this.idNota = doc.data().idNota;
+        (<HTMLSelectElement>document.getElementById('volume'+id.toString())).value = doc.data().volume
+        this.conf = true
+      })
 
-    if(this.conf) {
-      const docRef= doc(db, "NotaFiscal", this.idNota)
-      const docSnap = await getDoc(docRef)
+      if(this.conf) {
+        const docRef= doc(db, "NotaFiscal", this.idNota)
+        const docSnap = await getDoc(docRef)
 
-      this.patient = docSnap.data().paciente
-      this.doctor = docSnap.data().medico
-      
-      this.conf = false
+        this.patient = docSnap.data().paciente
+        this.doctor = docSnap.data().medico
+        
+        this.conf = false
+      }
+    }
+
+    if(this.option == 'saida') {
+      this.itens = []
+
+      this.noteNumber = parseInt((<HTMLSelectElement>document.getElementById('note')).value)
+
+      const q = query(collection(db, "NotaFiscal"), where("numNota", "==", this.noteNumber), where("movimentacao", "==", "Entrada"))
+      const querySnapshot = await getDocs(q)
+
+      querySnapshot.forEach(async (doc) => {
+        //sconsole.log(doc.data())
+        let obj = doc.data().item
+        let index = Object.keys(obj)
+        let arr = []
+
+        for(let i=0; i<index.length; i++) {
+          let q2 = query(collection(db, "Estoque"), where("serie", "==", doc.data().item[i].serie))
+          let querySnapshot2 = await getDocs(q2)
+          
+          arr = []
+          if(querySnapshot2.size != 0) {
+            arr.push(doc.data().item[i].serie, doc.data().item[i].volume)
+            this.itens.push(arr)
+          }
+        }
+        this.loadItens()
+      })
+
+      if(querySnapshot.size == 0) this.loadItens()
+    }
+  }
+
+  loadItens() {
+    this.deleteItens();
+
+    if(this.itens != 0) {
+      (<HTMLSelectElement>document.getElementById('serie21')).value = this.itens[0][0];
+      (<HTMLSelectElement>document.getElementById('volume21')).value = this.itens[0][1];
+    }
+
+    for(let i=1; i<this.itens.length; i++) {
+      this.addItem();
+
+      if(i != this.itens.length) {
+        (<HTMLSelectElement>document.getElementById('serie'+(i+1).toString())).value = this.itens[i][0];
+        (<HTMLSelectElement>document.getElementById('volume'+(i+1).toString())).value = this.itens[i][1]
+      }
     }
   }
 
   cancel() {
+    //this.deleteItens()
     this.router.navigateByUrl('/home')
+  }
+
+  deleteItens() {
+    let storage = parseInt(localStorage.getItem('itemSaida'))
+    let j = 1
+
+    for(let i=1; i<storage; i++) {
+      if(document.getElementById((j+1).toString())) {
+        document.getElementById((j+1).toString()).remove()
+      } else {
+        i--
+      }
+      j++
+    }
+
+    (<HTMLSelectElement>document.getElementById('serie1')).value = null;
+    (<HTMLSelectElement>document.getElementById('volume1')).value = null
+    
+    localStorage.setItem('itemSaida', '1')
   }
 
   async presentAlert(message) {
