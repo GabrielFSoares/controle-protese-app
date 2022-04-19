@@ -15,17 +15,8 @@ export class AutenticacaoService {
 
   constructor(public router: Router, public alertController: AlertController) { }
 
-  async loginFirebase(user:string, password:string) {
-    let email = ''
-    const q = query(collection(db, "Usuarios"), where("usuario", "==", user))
-    const querySnapshot = await getDocs(q)  
-
-    querySnapshot.forEach((doc) => {
-      email = doc.data().email
-    })
-
-    if(email != '') {
-      signInWithEmailAndPassword(auth, email, password)
+  async loginFirebase(user:string, email:string, password:string, btn) {
+    signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         localStorage.setItem('user', user)
         this.router.navigateByUrl('/home')
@@ -34,10 +25,8 @@ export class AutenticacaoService {
         const errorCode = error.code
         const errorMessage = error.message
         this.presentAlert('Senha incorreta')
+        btn.removeAttribute('disabled')
       })
-    } else {
-      this.presentAlert('Usuário não existe')
-    }
   }
 
   async createUser(email:string, password:string, login:string) {
