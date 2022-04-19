@@ -3,7 +3,11 @@
   <nav class="navbar navbar-light">
     <div class="container-fluid d-flex justify-content-end">
       <a class="text-dark" href="#" id="navbarDropdown" data-bs-toggle="dropdown">
-        <p id="userName">{{user}}</p><span class="icon"><ion-icon name="person-circle" size="large"></ion-icon></span>
+        <ion-skeleton-text *ngIf="!user" animated style="width: 20%"></ion-skeleton-text>
+        <p id="userName">{{user}}</p>
+        <span class="icon">
+          <ion-icon name="person-circle" size="large"></ion-icon>
+        </span>
       </a>
       <ul id="menu" class="dropdown-menu" aria-labelledby="navbarDropdown">
         <li><a class="dropdown-item" (click)="open(modalEmail)">Alterar e-mail</a></li>
@@ -122,10 +126,7 @@
           <th scope="col">Usuário</th>
         </tr>
       </thead>
-      <tbody>
-        <tr *ngIf="!loadNote">
-          <td colspan="8" class="text-center">Nenhum resultado encontrado</td>
-        </tr>
+      <tbody *ngIf="movements.length">
         <tr *ngFor="let movement of movements; let i=index">
           <td scope="row" class="text-center">
             <ion-icon class="text-primary h5 me-2" name="create" (click)="presentModal(i)"></ion-icon>
@@ -139,6 +140,25 @@
           <td>{{movement.movimentacao}}</td>
           <td>{{movement.usuario}}</td>
         </tr>
+      </tbody>
+
+      <tbody *ngIf="!movements.length">
+        <tr *ngIf="!loadNote">
+          <td colspan="9" class="text-center">Nenhum resultado encontrado</td>
+        </tr>
+        <ng-container *ngIf="loadNote">
+        <tr *ngFor="let i of quant">
+          <td></td>
+          <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+          <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+          <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+          <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+          <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+          <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+          <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+          <td><ion-skeleton-text animated style="width: 100%"></ion-skeleton-text></td>
+        </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>

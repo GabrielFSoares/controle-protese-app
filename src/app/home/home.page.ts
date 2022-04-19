@@ -39,6 +39,7 @@ export class HomePage {
   public email: string
   public newEmail: string
   public admin: boolean
+  public quant = []
 
   constructor( 
     public router: Router, 
@@ -50,6 +51,7 @@ export class HomePage {
   public user: string
 
   ngOnInit() {
+    this.quant = [0, 1, 2, 3, 4, 5]
     this.user = localStorage.getItem('user')
     this.movementsLoad()
     this.verifyAdmin()
@@ -98,6 +100,8 @@ export class HomePage {
   }
 
   async movementsLoad() {
+    this.loadNote = true
+    
     const notesRef = query(collection(db, "NotaFiscal"))
     let filter = query(notesRef)
 
@@ -134,7 +138,6 @@ export class HomePage {
     const querySnapshot = await getDocs(filter)
 
     this.movements = []
-    this.loadNote = false
     this.docId = []
     this.itens = []
 
@@ -182,10 +185,7 @@ export class HomePage {
     }
 
     this.filterSerie = false
-
-    if(this.movements.length != 0) {
-      this.loadNote = true 
-    }
+    this.movements.length == 0 ? this.loadNote = false : this.loadNote = true
   }
 
   open(content) {
