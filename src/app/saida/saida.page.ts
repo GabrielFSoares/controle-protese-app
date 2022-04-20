@@ -111,14 +111,17 @@ export class SaidaPage implements OnInit {
 
     this.confirm = true
 
-    for(let i=1; i<=storage; i++) {
-      if((<HTMLSelectElement>document.getElementById('serie'+i.toString())).value == '') {
-        this.confirm = false 
-      } 
-    }
+    if(this.option == 'consumo') {
+      for(let i=1; i<=storage; i++) {
+        if((<HTMLSelectElement>document.getElementById('serie'+i.toString())).value == '') {
+          this.confirm = false 
+        } 
+      }
 
-    if(this.patient == '' || this.doctor == '') {
-      this.confirm = false 
+
+      if(this.patient == '' || this.doctor == '') {
+        this.confirm = false 
+      }
     }
 
     if(this.option == 'saida') {
@@ -126,11 +129,19 @@ export class SaidaPage implements OnInit {
     } else if(this.option == 'consumo') {
       this.movement = 'Consumo'
     }
- 
+    
     if(this.confirm) {
       for(let j=0, i=1; i<=storage; i++, j++) {
-        let serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
-        let volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+        let serie 
+        let volume
+
+        if(this.option == 'saida' && i == 1) {
+          serie = (<HTMLSelectElement>document.getElementById('serie2'+i.toString())).value
+          volume = (<HTMLSelectElement>document.getElementById('volume2'+i.toString())).value
+        } else {
+            serie = (<HTMLSelectElement>document.getElementById('serie'+i.toString())).value
+            volume = (<HTMLSelectElement>document.getElementById('volume'+i.toString())).value
+          }
 
         this.itens[j] = {
           'descricao': this.product,
@@ -138,8 +149,9 @@ export class SaidaPage implements OnInit {
           'volume': volume,
         }
       }
+      console.log(this.idNota)
 
-      if(this.idNota !== null) {
+      if(this.idNota !== undefined && this.idNota !== null) {
         const docRef= doc(db, "NotaFiscal", this.idNota)
         const docSnap = await getDoc(docRef)
  
@@ -174,6 +186,7 @@ export class SaidaPage implements OnInit {
         }
         console.log(compare, storage)
         if(compare == storage) {
+          console.log(this.notaFiscal)
           const docRef2 = await addDoc(collection(db, "NotaFiscal"), this.notaFiscal)
 
           for(let i=0; i<docId.length; i++) {
@@ -308,10 +321,13 @@ export class SaidaPage implements OnInit {
       const querySnapshot = await getDocs(q)
 
       querySnapshot.forEach(async (doc) => {
-        //sconsole.log(doc.data())
         let obj = doc.data().item
         let index = Object.keys(obj)
         let arr = []
+
+        this.idNota = doc.id
+        this.patient = doc.data().paciente
+        this.doctor = doc.data().medico
 
         for(let i=0; i<index.length; i++) {
           let q2 = query(collection(db, "Estoque"), where("serie", "==", doc.data().item[i].serie))
